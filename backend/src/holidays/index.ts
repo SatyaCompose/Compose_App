@@ -1,3 +1,4 @@
+import { NO_OF_HOLIDAYS } from '../common/constant';
 import CompanyHoliday from '../models/HolidaysModel'; // Import your CompanyHoliday model
 
 interface Holidays {
@@ -46,8 +47,30 @@ export const getDashBoardHolidaysList = async () => {
     } catch (error) {
         return {
             status: 500,
-            message: 'Error fetching holidays.',
+            message: 'Error fetching holidays...!',
             error: error,
         };
     }
 }
+export const getHolidays = async () => {
+    try {
+        const today = new Date(); // Get today's date
+        today.setHours(0, 0, 0, 0); // Reset time to midnight for comparison
+
+        // Fetch holidays starting from today, limited to the specified number
+        const data = await CompanyHoliday.find().limit(NO_OF_HOLIDAYS);
+
+        return {
+            status: 200,
+            message: "Holidays fetched successfully ...!",
+            data: data,
+        };
+    } catch (error) {
+        return {
+            status: 500,
+            message: "Error fetching holidays...!",
+            error: error,
+        };
+    }
+};
+

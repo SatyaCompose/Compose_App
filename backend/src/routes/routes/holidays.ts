@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getDashBoardHolidaysList, uploadHolidays } from "../../holidays";
+import { getDashBoardHolidaysList, getHolidays, uploadHolidays } from "../../holidays";
 
 export const holidaysRouter = Router();
 
@@ -21,4 +21,13 @@ holidaysRouter.get('/get-five-holidays', async(req, res) => {
     }catch(error){
         throw new Error("Error fetching Holidays..!");
     }
-})
+});
+
+holidaysRouter.get('/get', async(req, res) => {
+    try{
+        const response = await getHolidays();
+        res.json(response);
+    }catch(error){
+        throw new Error("Error at Fetching Holidays...!");
+    }
+});
