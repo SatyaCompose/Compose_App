@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
-import Notification from '../models/notificationModel';
-import User from '../models/userModel'
+import Notification from '../models/notification';
+import User from '../models/user'
 
 const sendEmail = async (recipients: any, title: string, subject: string, body: string, isBroadcast: boolean, senderEmail: string) => {
     const notifications = recipients.map((email: any) => ({
@@ -114,4 +114,3 @@ export const markAsRead = async (notificationId: string) => {
         };
     }
 };
-

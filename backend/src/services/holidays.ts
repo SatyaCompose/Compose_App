@@ -1,5 +1,5 @@
 import { NO_OF_HOLIDAYS } from '../common/constant';
-import CompanyHoliday from '../models/HolidaysModel'; // Import your CompanyHoliday model
+import CompanyHoliday from '../models/Holidays'; // Import your CompanyHoliday model
 
 interface Holidays {
     date: string;

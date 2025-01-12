@@ -1,4 +1,4 @@
-import User from '../models/userModel';
+import User from '../models/user';
 import jwt from 'jsonwebtoken';
 
 const blacklist: Set<string> = new Set();

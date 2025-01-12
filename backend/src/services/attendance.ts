@@ -1,5 +1,5 @@
-import Attendance from '../models/attendenceModel';
-import CompanyHoliday from '../models/HolidaysModel'
+import Attendance from '../models/attendence';
+import CompanyHoliday from '../models/Holidays'
 import jwt from 'jsonwebtoken';
 import { DAILY_WORK_HOURS } from '../common/constant';
 
