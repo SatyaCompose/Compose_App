@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { loginUser, logoutUser, refreshAccessToken, refreshToken, registeUser } from '../authentication';
+import { loginUser, logoutUser, refreshAccessToken, refreshToken, registeUser } from '../services/authentication';
 
 const authRouter = Router();
 

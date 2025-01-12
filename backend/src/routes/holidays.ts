@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getDashBoardHolidaysList, getHolidays, uploadHolidays } from "../../holidays";
+import { getDashBoardHolidaysList, getHolidays, uploadHolidays } from "../services/holidays";
 
 export const holidaysRouter = Router();
 

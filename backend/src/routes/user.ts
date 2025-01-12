@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createUser, fetchUser, updateUser, uploadImage } from "../../users";
+import { createUser, fetchUser, updateUser, uploadImage } from "../services/user";
 
 export const userRouter = Router();
 

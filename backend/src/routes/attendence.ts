@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { calculateMonthlyAttendance, calculateYearlyAttendance, clockIn, clockOut, getAttendance } from "../../attendence";
+import { calculateMonthlyAttendance, calculateYearlyAttendance, clockIn, clockOut, getAttendance } from "../services/attendance";
 
 const attendenceRouter = Router();
 

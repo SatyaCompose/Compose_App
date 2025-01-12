@@ -1,10 +1,10 @@
-import adminRouter from './adminRouter';
-import authRouter from './authenticationRoutes';
-import { userRouter } from './routes';
-import attendenceRouter from './routes/attendenceRouter';
-import { holidaysRouter } from './routes/holidays';
-import { leaveRouter } from './routes/leaveRouter';
-import notificationRouter from './routes/notification';
+import adminRouter from './admin';
+import authRouter from './authentication';
+import { userRouter } from './user';
+import attendenceRouter from './attendence';
+import {holidaysRouter} from './holidays';
+import { leaveRouter } from './leave';
+import notificationRouter from './notification';
 
 const routes = [
     { path: '/', router: authRouter },
