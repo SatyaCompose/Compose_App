@@ -1,4 +1,5 @@
 import Attendance from '../models/attendenceModel';
+import CompanyHoliday from '../models/HolidaysModel'
 import jwt from 'jsonwebtoken';
 import { DAILY_WORK_HOURS } from '../common/constant';
 
@@ -96,29 +97,34 @@ export const clockOut = async (token: string) => {
         };
     }
 };
-const companyHolidays: string[] = [
-    "2024-11-05", "2024-11-11"
-];
+
+const fetchCompanyHolidays = async (): Promise<string[]> => {
+    const holidays = await CompanyHoliday.find({}, { date: 1, _id: 0 }); // Fetch only the 'date' field
+    return holidays.map((holiday) => holiday.date.toISOString().split('T')[0]); // Convert to 'YYYY-MM-DD'
+};
 
 const isWeekend = (date: Date): boolean => {
     const day = date.getUTCDay();
     return day === 6 || day === 0;
 };
 
-const isHoliday = (date: Date): boolean => {
+const isHoliday = async (date: Date, companyHolidays: string[]): Promise<boolean> => {
     const dateString = date.toISOString().split('T')[0];
     return companyHolidays.includes(dateString);
 };
 
-const getWorkingDaysInMonth = (year: number, month: number): number => {
+export const getWorkingDaysInMonth = async (year: number, month: number): Promise<number> => {
+    const holidays = await fetchCompanyHolidays(); // Fetch holidays once
     const date = new Date(Date.UTC(year, month, 1, 0, 0, 0));
     let workingDays = 0;
-    while (date.getMonth() === month) {
-        if (!isWeekend(date) && !isHoliday(date)) {
+
+    while (date.getUTCMonth() === month) {
+        if (!isWeekend(date) && !(await isHoliday(date, holidays))) {
             workingDays++;
         }
-        date.setDate(date.getDate() + 1);
+        date.setUTCDate(date.getUTCDate() + 1);
     }
+
     return workingDays;
 };
 
@@ -126,7 +132,7 @@ export const calculateMonthlyAttendance = async (token: string, year: number, mo
     try {
         const payload = jwt.decode(token);
         const { email }: any = payload;
-        const workingDays = getWorkingDaysInMonth(year, month);
+        const workingDays = await getWorkingDaysInMonth(year, month);
         const totalRequiredHours = workingDays * DAILY_WORK_HOURS;
 
         const startDate = new Date(Date.UTC(year, month, 1));
@@ -179,7 +185,7 @@ export const calculateYearlyAttendance = async (token: string, year: string) => 
         let actualWorkedHours = 0;
 
         for (let month = 0; month < 12; month++) {
-            const workingDays = getWorkingDaysInMonth(Number(year), month);
+            const workingDays = await getWorkingDaysInMonth(Number(year), month);
             totalRequiredHours += workingDays * DAILY_WORK_HOURS;
 
             const startDate = new Date(Date.UTC(Number(year), month, 1, 0, 0, 0));

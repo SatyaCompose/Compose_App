@@ -6,6 +6,11 @@ interface Holidays {
     description: string;
 }
 
+/**
+ * Update Holidays List
+ * @param holidays 
+ * @returns 
+ */
 export const uploadHolidays = async (holidays: Holidays[]) => {
     try {
         console.log("H", holidays)
@@ -29,6 +34,10 @@ export const uploadHolidays = async (holidays: Holidays[]) => {
     }
 };
 
+/**
+ * Get 5 Holidays list
+ * @returns 
+ */
 export const getDashBoardHolidaysList = async () => {
     try {
         const today = new Date(); // Get today's date
@@ -52,6 +61,11 @@ export const getDashBoardHolidaysList = async () => {
         };
     }
 }
+
+/**
+ * Get all Holidays list
+ * @returns 
+ */
 export const getHolidays = async () => {
     try {
         const today = new Date(); // Get today's date
@@ -73,4 +87,3 @@ export const getHolidays = async () => {
         };
     }
 };
-
