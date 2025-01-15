@@ -1,9 +1,9 @@
 import { Router } from "express";
 import { calculateMonthlyAttendance, calculateYearlyAttendance, clockIn, clockOut, getAttendance } from "../services/attendance";
 
-const attendenceRouter = Router();
+const attendanceRouter = Router();
 
-attendenceRouter.get('/get-attendance', async (req, res) =>{
+attendanceRouter.get('/get-attendance', async (req, res) =>{
     try{
         const token: any = req.headers.authorization?.split(" ")?.[1];
         const data = await getAttendance(token)
@@ -13,7 +13,7 @@ attendenceRouter.get('/get-attendance', async (req, res) =>{
     }
 })
 
-attendenceRouter.get('/clock-in', async (req, res) => {
+attendanceRouter.get('/clock-in', async (req, res) => {
     const token: any = req.headers.authorization?.split(" ")?.[1];
     try {
         const data = await clockIn(token);
@@ -23,7 +23,7 @@ attendenceRouter.get('/clock-in', async (req, res) => {
     }
 });
 
-attendenceRouter.get('/clock-out', async (req, res) => {
+attendanceRouter.get('/clock-out', async (req, res) => {
     const token: any = req.headers.authorization?.split(" ")?.[1];
     try {
         const data = await clockOut(token);
@@ -33,7 +33,7 @@ attendenceRouter.get('/clock-out', async (req, res) => {
     }
 });
 
-attendenceRouter.post('/attendance-monthly-status', async (req, res) => {
+attendanceRouter.post('/attendance-monthly-status', async (req, res) => {
     try {
         const token: any = req.headers.authorization?.split(" ")?.[1];
         const { year, month } = req.body
@@ -44,7 +44,7 @@ attendenceRouter.post('/attendance-monthly-status', async (req, res) => {
     }
 });
 
-attendenceRouter.post('/attendance-yearly-status', async (req, res) => {
+attendanceRouter.post('/attendance-yearly-status', async (req, res) => {
     try {
         const token: any = req.headers.authorization?.split(" ")?.[1];
         const { year } = req.body
@@ -55,4 +55,4 @@ attendenceRouter.post('/attendance-yearly-status', async (req, res) => {
     }
 });
 
-export default attendenceRouter;
+export default attendanceRouter;
