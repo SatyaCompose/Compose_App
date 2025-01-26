@@ -10,9 +10,9 @@ export const fetchUser = async () => {
     }
 };
 
-export const updateUser = async () => {
+export const updateUser = async (data: any) => {
     try {
-        const response = await apiClient.post("/user/update-user");
+        const response = await apiClient.put("/user/update-user", data);
         return response.data;
     } catch (error) {
         console.error("Error fetching user:", error);

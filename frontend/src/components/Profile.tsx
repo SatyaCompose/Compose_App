@@ -1,105 +1,98 @@
 import React, { useEffect, useState } from 'react';
-import logo from '../assets/logo.png';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import PersonIcon from '@mui/icons-material/Person';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { Link } from 'react-router-dom';
-import '../styles/UserDashboard.css';
-import { Tabs, Tab, Box, Button, TextField } from '@mui/material';
-import NotificationIcon from './NotificationIcon';
+import { Tabs, Tab, Box, Button } from '@mui/material';
 import { ProfileAvatar } from './ProfileAvatar';
 import { fetchUser, updateUser } from '../services/user';
 import '../styles/Profile.css'
 import CustomTextField from './ProfileTextField';
-import SectionTitle from './SectionTitle';
+import { User } from '../types/user';
+import Navbar from './Navbar';
 
 const ProfilePage = () => {
     const [tabIndex, setTabIndex] = useState(0);
-    const [user, setUser] = useState<any>({});
-    const [isFocused, setIsFocused] = useState(false);
+    const [user, setUser] = useState<User>({});
+    const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        gender: '',
+        dateOfBirth: '',
+        email: '',
+        mobile: '',
+        address: '',
+        employeeNumber: '',
+        designation: '',
+        department: '',
+        dateOfJoining: '',
+        salaryInfo: '',
+        bankAcNumber: '',
+        ifscCode: ''
+    });
 
-    // const [formData, setFormData] = useState();
-
+    // Fetch user data on mount
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchUserData = async () => {
             try {
-                const data = await fetchUser();
+                const data = await fetchUser(); // Assuming fetchUser is a function that fetches the user data from backend
                 if (data && data.status === 200) {
-                    const userData = data?.data?.[0] || {};
+                    const userData = data?.data?.[0] || {} as User;
                     setUser(userData);
+                    setFormData({
+                        firstName: userData.firstName || '',
+                        lastName: userData.lastName || '',
+                        gender: userData.gender || '',
+                        dateOfBirth: userData.dateOfBirth || '',
+                        email: userData.email || '',
+                        mobile: userData.mobile || '',
+                        address: userData.address || '',
+                        employeeNumber: userData.employeeNumber || '',
+                        designation: userData.designation || '',
+                        department: userData.department || '',
+                        dateOfJoining: userData.dateOfJoining || '',
+                        salaryInfo: userData.salaryInfo || '',
+                        bankAcNumber: userData.bankAcNumber || '',
+                        ifscCode: userData.ifscCode || ''
+                    });
                 }
             } catch (error) {
-                console.error("Error in fetchData:", error);
+                console.error("Error fetching user data:", error);
             }
         };
-
-        const updateUserData = async () => {
-            try{
-                const data = await updateUser();
-                if (data && data.status === 200){
-                    const userData = data?.data || {};
-                    setUser(userData);
-                }
-            }catch(err: any){
-                console.error("Error Updating...", err)
-            }
-        }
-        updateUserData()
-        fetchData();
+        fetchUserData();
     }, []);
+
+    // Handle form field change
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>, fieldName: string) => {
+        console.log("FIELDNAME", fieldName);
+        console.log("TARGET", e.target.value);
+        setFormData((prevFormData) => ({
+            ...prevFormData, // Keep existing values
+            [fieldName]: e.target.value, // Update only the changed field
+        }));
+    };
+
+    console.log("FormData", formData)
+    // Handle Save Changes
+    const handleSaveChanges = async () => {
+        try {
+            const data = await updateUser(formData); // Assuming updateUser is a function that sends updated data to the backend
+            if (data && data.status === 200) {
+                setUser(data?.data || {});
+                console.log('User data updated successfully');
+            }
+        } catch (error) {
+            console.error("Error updating user data:", error);
+        }
+    };
 
     const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
         setTabIndex(newValue);
     };
 
     return (
-        <div className="dashboard">
-            <div className="navbar">
-                <div className="logo-container">
-                    <img src={logo} alt="Company Logo" className="Logo zoomed" />
-                </div>
-                <div className="right-section">
-                    <div className="notification-container">
-                        <NotificationIcon count={3} />
-                    </div>
-                    <div className="profile-container" style={{ marginLeft: 50, marginRight: 30 }}>
-                        <ProfileAvatar name={user?.firstName + user?.lastName} height={80} size='2.5rem' />
-                    </div>
-                </div>
+        <>
+            <div className="dashboard">
+                <Navbar />
             </div>
-            <div className="content-area">
-                <div className="sidebar">
-                    <ul className="menu-list">
-                        <li>
-                            <Link to="/user/dashboard" className='link'>
-                                <DashboardIcon style={{ marginRight: 8 }} /> Dashboard
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/user/profile" className='link'>
-                                <PersonIcon style={{ marginRight: 8 }} /> Profile
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/user/notification-form" className='link'>
-                                <NotificationsIcon style={{ marginRight: 8 }} /> Notification Form
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/user/attendance" className='link'>
-                                <EventAvailableIcon style={{ marginRight: 8 }} /> Attendance
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/sign-out" className='link'>
-                                <LogoutIcon style={{ marginRight: 8 }} /> Logout
-                            </Link>
-                        </li>
-                    </ul>
-                </div>
-
+            <div className="content-area" style={{ padding: 50, margin: 100 }}>
                 <div className="main-content">
                     <Box sx={{ width: '80%', margin: 'auto', mt: 4 }}>
                         <Tabs value={tabIndex} onChange={handleTabChange} centered>
@@ -111,43 +104,57 @@ const ProfilePage = () => {
                         <Box className='UserData-Box' sx={{ mt: 4 }}>
                             {tabIndex === 0 && (
                                 <Box sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
-                                    <ProfileAvatar name={user?.firstName+user?.lastName} height={150} size='5rem' />
+                                    <ProfileAvatar name={(user?.firstName ?? '') + (user?.lastName ?? '')} height={150} size='5rem' />
                                     <div style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', gap: 40, marginTop: 80 }}>
-                                        <CustomTextField label='First Name' defaultValue='' mb={4}/>
-                                        <CustomTextField label='Last Name' defaultValue='' mb={4} />
+                                        <CustomTextField label='First Name' defaultValue={formData?.firstName} mb={4} onChange={(e) => handleChange(e, 'firstName')} />
+                                        <CustomTextField label='Last Name' defaultValue={formData?.lastName} mb={4} onChange={(e) => handleChange(e, 'lastName')} />
                                     </div>
                                     <div style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', gap: 40 }}>
-                                        <CustomTextField label='Gender' defaultValue='' mb={4} />
-                                        <CustomTextField label='Date of Birth' defaultValue='' mb={4} />
+                                        <CustomTextField label='Gender' defaultValue={formData?.gender} mb={4} onChange={(e) => handleChange(e, 'gender')} />
+                                        <CustomTextField label='Date of Birth' defaultValue={formData?.dateOfBirth} mb={4} onChange={(e) => handleChange(e, 'dateOfBirth')} />
                                     </div>
                                     <div
                                         style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', gap: 40, }}
                                     >
-                                        <CustomTextField label='Email' defaultValue='' mb={2} />
-                                        <CustomTextField label='Mobile' defaultValue='' mb={2} />
-                                    </div>
-                                    <SectionTitle text='Job Details' />
-                                    <div
-                                        style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', gap: 40, }}
-                                    >
-                                        <CustomTextField label='First Name' defaultValue='' mb={4} />
-                                        <CustomTextField label='Last Name' defaultValue='' mb={4} />
-                                    </div>
-                                    <div
-                                        style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', gap: 40, }}
-                                    >
-                                        <CustomTextField label='First Name' defaultValue='' mb={4} />
-                                        <CustomTextField label='Last Name' defaultValue='' mb={4} />
+                                        <CustomTextField label='Email' defaultValue={formData?.email} mb={2} onChange={(e) => handleChange(e, 'email')} />
+                                        <CustomTextField label='Mobile' defaultValue={formData?.mobile} mb={2} onChange={(e) => handleChange(e, 'mobile')} />
                                     </div>
 
-                                    <Button variant="contained" style={{ marginTop:20, width: '20%', alignSelf: 'center'}}>Save Changes</Button>
+                                    <div
+                                        style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', gap: 40, }}
+                                    >
+                                        <CustomTextField label='Address' defaultValue={formData?.address} mb={4} onChange={(e) => handleChange(e, 'address')} />
+                                        <CustomTextField label='Employee Number' defaultValue={formData?.employeeNumber} mb={4} onChange={(e) => handleChange(e, 'employeeNumber')} />
+                                    </div>
+
+                                    <div
+                                        style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', gap: 40, }}
+                                    >
+                                        <CustomTextField label='Designation' defaultValue={formData?.designation} mb={4} onChange={(e) => handleChange(e, 'designation')} />
+                                        <CustomTextField label='Department' defaultValue={formData?.department} mb={4} onChange={(e) => handleChange(e, 'department')} />
+                                    </div>
+                                    <div
+                                        style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', gap: 40, }}
+                                    >
+                                        <CustomTextField label='Date of joining' defaultValue={formData?.dateOfJoining} mb={4} onChange={(e) => handleChange(e, 'dateOfJoining')} />
+                                        <CustomTextField label='Salary Info' defaultValue={formData?.salaryInfo} mb={4} onChange={(e) => handleChange(e, 'salaryInfo')} />
+                                    </div>
+
+                                    <div
+                                        style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', gap: 40, }}
+                                    >
+                                        <CustomTextField label='Bank A/C Number' defaultValue={formData?.bankAcNumber} mb={4} onChange={(e) => handleChange(e, 'bankAcNumber')} />
+                                        <CustomTextField label='IFSC code' defaultValue={formData?.ifscCode} mb={4} onChange={(e) => handleChange(e, 'ifscCode')} />
+                                    </div>
+
+                                    <Button variant="contained" style={{ marginTop: 20, width: '20%', alignSelf: 'center' }} onClick={handleSaveChanges}>Save Changes</Button>
                                 </Box>
                             )}
                             {tabIndex === 1 && (
                                 <Box>
-                                    <CustomTextField label='Current Password' defaultValue='' mb={4} />
-                                    <CustomTextField label='New Password' defaultValue='' mb={4} />
-                                    <CustomTextField label='Confirm Password' defaultValue='' mb={4} />
+                                    <CustomTextField label='Current Password' defaultValue='' mb={4} onChange={(e) => handleChange(e, 'currentPassword')} />
+                                    <CustomTextField label='New Password' defaultValue='' mb={4} onChange={(e) => handleChange(e, 'NewPassword')} />
+                                    <CustomTextField label='Confirm Password' defaultValue='' mb={4} onChange={(e) => handleChange(e, 'confirmPassword')} />
                                     <Button variant="contained">Change Password</Button>
                                 </Box>
                             )}
@@ -163,7 +170,7 @@ const ProfilePage = () => {
                     </Box>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

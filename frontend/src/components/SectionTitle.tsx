@@ -5,8 +5,7 @@ const SectionTitle = ({ text }: { text: string }) => {
         <div
             style={{
                 alignItems: "center",
-                justifyContent: 'center',
-                marginLeft: 175
+                justifyContent: 'center'
             }}
         >
             <div
@@ -16,7 +15,7 @@ const SectionTitle = ({ text }: { text: string }) => {
                     justifyContent: "center",
                     width: "100%",
                     margin: "16px 0",
-                    maxWidth: "840px", // Adjust this to match your input box width
+                    maxWidth: "839.17px auto",
                 }}
             >
                 <div
@@ -25,6 +24,10 @@ const SectionTitle = ({ text }: { text: string }) => {
                         height: "1.5px",
                         backgroundColor: "#4ACF50",
                         marginRight: "8px",
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
                         maxWidth: "100px"
                     }}
                 />

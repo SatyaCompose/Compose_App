@@ -1,0 +1,40 @@
+.leave-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    /* Two columns */
+    gap: 10px;
+    /* Spacing between items */
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 200px;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.leave-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word;
+    /* Adjust for long text */
+}
+
+.leave-date {
+    font-weight: bold;
+    color: #4CAF50;
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
+
+.leave-name {
+    font-weight: bold;
+    text-align: left;
+    color: #333;
+    margin-right: 10px;
+    /* Space between name and count */
+}

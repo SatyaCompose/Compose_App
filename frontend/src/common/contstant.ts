@@ -42,3 +42,17 @@ export const getLast10Days = () => {
     return last10Days;
 };
 
+export const DEFAULT_SICK_LEAVES = 10;
+
+export const DEFAULT_PAID_LEAVES = 20;
+
+export const CLOCK_IN_TEXT = "Clocked in for today; keep it up! 🕒";
+
+export const FULL_ATTENDANCE_TEXT = "Fully attended with great consistency! 🎉";
+
+export const PARTIAL_ATTENDANCE_TEXT = "Partially attended; keep striving for full attendance! 🌟";
+
+export const MINIMAL_ATTENDANCE_TEXT = "Minimal attendance; try to increase engagement! ⚡";
+
+export const NO_ATTENDANCE_TEXT = "No attendance logged for this day. 🚫";
+

@@ -6,8 +6,7 @@ export interface User{
     lastName?: string;
     gender?: string;
     dateOfBirth?: string;
-    image?: any;
-    employeeNumber?: number;
+    employeeNumber?: string;
     designation?: string;
     department?: string;
     dateOfJoining?: string;

@@ -49,7 +49,6 @@ export const refreshAccessTokenService = async () => {
             localStorage.setItem('refresh_token', res.data);
             refreshToken = res.data;
         };
-        // const token = refreshToken || refreshAccessToken;
 
         const response = await authClient.post('/refresh-access-token', { refreshToken });
         const { accessToken } = response?.data ?? {};

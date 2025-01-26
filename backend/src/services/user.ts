@@ -70,11 +70,13 @@ export const updateUser = async (token: string, body: any) => {
             bank,
             bankAcNumber,
             ifscCode,
-            salaryInfo
+            salaryInfo,
+            gender,
+            dateOfBirth,
         } = body
 
         const userExist = await User.findOne({ email });
-
+        console.log("USER", userExist)
         if (!userExist) {
             const newUser = new User({
                 email,
@@ -90,7 +92,9 @@ export const updateUser = async (token: string, body: any) => {
                 bank,
                 bankAcNumber,
                 ifscCode,
-                salaryInfo
+                salaryInfo,
+                gender,
+                dateOfBirth
             });
 
             const savedUser = await newUser.save();
@@ -117,7 +121,9 @@ export const updateUser = async (token: string, body: any) => {
                 bank,
                 bankAcNumber,
                 ifscCode,
-                salaryInfo
+                salaryInfo,
+                gender,
+                dateOfBirth
             },
             { new: true } // Return the updated document
         );

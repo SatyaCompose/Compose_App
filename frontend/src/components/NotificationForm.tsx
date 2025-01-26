@@ -14,35 +14,18 @@ import NotificationIcon from './NotificationIcon';
 import { ProfileAvatar } from './ProfileAvatar';
 import { fetchUser } from '../services/user';
 import { User } from '../types/user';
+import Navbar from './Navbar';
 
 const NotificationForm = () => {
-    const [type, setType] = useState('leave');
+    const [type, setType] = useState('');
     const [formData, setFormData] = useState({
         startDate: '',
         endDate: '',
         hours: '',
         cause: '',
+        leaveType: '',
         date: '',
     });
-    const [user, setUser] = useState<User>({});
-
-    const { firstName = '', lastName = '' } = user ?? {}
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const data = await fetchUser();
-                if (data && data.status === 200) {
-                    const userData = data?.data?.[0] || {};
-                    setUser(userData);
-                }
-            } catch (error) {
-                console.error("Error in fetchData:", error);
-            }
-        };
-
-        fetchData();
-    }, []);
 
     const options = [
         { value: "leave", label: "Leave" },
@@ -50,65 +33,37 @@ const NotificationForm = () => {
         { value: "general", label: "General" }
     ];
 
-    const handleChange = (e: any) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+    const handleDateInputClick = (event: React.MouseEvent<HTMLInputElement>) => {
+        const inputElement = event.target as HTMLInputElement;
+        if (inputElement.type === "date" && inputElement.showPicker) {
+            inputElement.showPicker(); // Safely invoke showPicker if supported
+        }
     };
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    console.log("FORMDATA", formData)
     const handleSubmit = (e: any) => {
         e.preventDefault();
     };
 
     return (
-        <div className="dashboard">
-            <div className="navbar">
-                <div className="logo-container">
-                    <img src={logo} alt="Company Logo" className="Logo zoomed" />
-                </div>
-                <div className="right-section">
-                    <div className="notification-container">
-                        <NotificationIcon count={3} />
-                    </div>
-                    <div className="profile-container" style={{ marginLeft: 50, marginRight: 30 }}>
-                        <ProfileAvatar name={firstName+lastName} height={80} size='2.5rem' />
-                    </div>
-                </div>
+        <>
+            <div className="dashboard">
+                <Navbar />
             </div>
-            <div className="content-area">
-                <div className="sidebar">
-                    <ul className="menu-list">
-                        <li>
-                            <Link to="/user/dashboard" className='link'>
-                                <DashboardIcon style={{ marginRight: 8 }} /> Dashboard
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/user/dashboard" className='link'>
-                                <PersonIcon style={{ marginRight: 8 }} /> Profile
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/user/notification-form" className='link'>
-                                <NotificationsIcon style={{ marginRight: 8 }} /> Notification Form
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/user/attendance" className='link'>
-                                <EventAvailableIcon style={{ marginRight: 8 }} /> Attendance
-                            </Link>
-                        </li>
-                        <li>
-                            <Link to="/sign-out" className='link'>
-                                <LogoutIcon style={{ marginRight: 8 }} /> Logout
-                            </Link>
-                        </li>
-                    </ul>
-                </div>
-
+            <div className="content-area" style={{ padding: 50, margin: 100 }}>
                 <div className="main-content">
                     <div className='form-div'>
-                        <h1>Send a Notification</h1>
                         <form className='notification-form' onSubmit={handleSubmit}>
+                            <h1>Notification Form</h1>
+
                             <Select
                                 placeholder="Type"
                                 options={options}
@@ -128,17 +83,71 @@ const NotificationForm = () => {
                                         cursor: "pointer",
                                     })
                                 }}
-                                required
-                            />
+                                required />
 
                             {type === 'leave' && (
                                 <>
-                                    <input type="date" name="startDate" onChange={handleChange} placeholder='Start Date' required />
-                                    <input type="date" name="endDate" onChange={handleChange} placeholder='End Date' required />
-                                    <textarea name="cause" onChange={handleChange} placeholder='Cause' required />
+                                    <select
+                                        name="leaveType"
+                                        onChange={handleChange}
+                                        value={formData.leaveType || ""}
+                                        aria-labelledby="leaveTypeLabel"
+                                        required
+                                    >
+                                        <option value="" disabled>
+                                            Select Leave Type
+                                        </option>
+                                        <option value="single">Single Day Leave</option>
+                                        <option value="long">Long Leave</option>
+                                    </select>
+                                    {formData?.leaveType !== '' ? (
+                                        formData.leaveType === 'single' ? (
+                                            <>
+                                                <input
+                                                    type="date"
+                                                    name="Date"
+                                                    onChange={handleChange}
+                                                    onClick={handleDateInputClick}
+                                                    placeholder="Date"
+                                                    required />
+                                                <input
+                                                    type="number"
+                                                    name="hours"
+                                                    onChange={handleChange}
+                                                    placeholder="No. of Hours"
+                                                    min="1"
+                                                    max="24"
+                                                    required />
+                                            </>
+                                        ) : (
+                                            <>
+                                                <input
+                                                    type="date"
+                                                    name="startDate"
+                                                    onChange={handleChange}
+                                                    onClick={handleDateInputClick}
+                                                    placeholder="Start Date"
+                                                    required />
+                                                <input
+                                                    type="date"
+                                                    name="endDate"
+                                                    onChange={handleChange}
+                                                    onClick={handleDateInputClick}
+                                                    placeholder="End Date"
+                                                    required />
+                                            </>
+                                        )
+                                    ) : null}
 
+
+                                    <textarea
+                                        name="cause"
+                                        onChange={handleChange}
+                                        placeholder="Leave the Proper Reason here ...!"
+                                        required />
                                 </>
                             )}
+
 
                             {type === "working-hours" && (
                                 <>
@@ -155,9 +164,7 @@ const NotificationForm = () => {
                                     <input placeholder='Subject' type="subject" name="endDate" onChange={handleChange} required />
                                     <textarea placeholder='Body' name="body" onChange={handleChange} required />
                                 </>
-                            )
-
-                            }
+                            )}
 
                             <Button
                                 type="submit"
@@ -173,7 +180,7 @@ const NotificationForm = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

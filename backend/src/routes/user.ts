@@ -23,7 +23,7 @@ userRouter.get("/create-user", async (req, res) => {
     }
 })
 
-userRouter.get("/update-user", async (req, res) => {
+userRouter.put("/update-user", async (req, res) => {
     try {
         const token: any = req.headers.authorization?.split(" ")?.[1];
         const body = req.body

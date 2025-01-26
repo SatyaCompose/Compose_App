@@ -23,18 +23,12 @@ export default mongoose.model("user", new mongoose.Schema({
     },
     gender: {
         type: String,
-        required: [true, "Please fill the gender"]
     },
     dateOfBirth: {
-        type: Date,
-        required: [true, "Please fill the dateOfBirth"]
-    },
-    image: {
-        data: Buffer,
-        contentType: String 
+        type: String,
     },
     employeeNumber: {
-        type: Number,
+        type: String,
     },
     designation: {
         type: String,
@@ -65,5 +59,8 @@ export default mongoose.model("user", new mongoose.Schema({
     },
     salaryInfo: {
         type: String,
+    },
+    type: {
+        
     }
 }));

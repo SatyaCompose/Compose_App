@@ -10,3 +10,20 @@
     width: 400px !important;
     align-items: center !important;
 }
+.css-1usuzwp-MuiButtonBase-root-MuiTab-root.Mui-selected{
+    color: #4CAF50 !important;
+}
+.css-1abvrni-MuiButtonBase-root-MuiButton-root{
+    background-color: #4CAF50 !important;
+}
+
+.css-hoe9xz{
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.css-dw14h1-MuiFormControl-root-MuiTextField-root{
+    width: auto !important;
+}

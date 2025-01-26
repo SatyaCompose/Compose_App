@@ -55,12 +55,12 @@ export const updateLeaveStatus = async (leaveId: string, status: string) => {
     }
 };
 
-export const fetchPendingLeaves = async (token: string) => {
+export const fetchLeavesByStatus = async (token: string, status: string) => {
     try {
         const payload = jwt.decode(token);
         const { email: senderEmail }: any = payload;
         const user = await User.findOne({ email: senderEmail })
-        const pendingLeaves = await Leave.find({ status: "Pending", user: user?._id });
+        const pendingLeaves = await Leave.find({ status: status, user: user?._id });
         return {
             status: 200,
             message: "Pending leaves fetched Successfully...!",
@@ -95,7 +95,7 @@ export const fetchUserLeaves = async (token: string) => {
     }
 }
 
-export const fetchLeavesForAdmin = async (token: string) => {
+export const fetchAdminInboxLeaves = async (token: string) => {
     try {
         const payload = jwt.decode(token);
         const { email }: any = payload;
@@ -111,6 +111,51 @@ export const fetchLeavesForAdmin = async (token: string) => {
             status: 400,
             statusText: "Bad Request",
             message: "Error during fetching the pending leaves..!"
+        };
+    }
+}
+
+export const fetchLeavesByTypes = async(token: string) => {
+    try {
+        const payload = jwt.decode(token);
+        const { email: senderEmail }: any = payload;
+        const user = await User.findOne({ email: senderEmail });
+        const leaves = await Leave.find({ user: user?._id });
+        const paidLeaves = leaves.filter((data) => {
+            return data?.leaveType === 'Paid Leave';
+        });
+        const sickLeave = leaves.filter((data) => {
+            return data?.leaveType === 'Sick Leave';
+        });
+        const unpaidLeave = leaves.filter((data) => {
+            return data?.leaveType === 'Unpaid Leave';
+        });
+        const pendingLeaves = leaves.filter((data) => {
+            return data?.status === 'Pending';
+        });
+        const approvedLeaves = leaves.filter((data) => {
+            return data?.status === 'Approved';
+        });
+        const rejectedLeaves = leaves.filter((data) => {
+            return data?.status === 'Rejected';
+        });
+        return {
+            status: 200,
+            message: "Leaves are fetched successfully ...!",
+            data: {
+                paidLeaves: paidLeaves?.length,
+                sickLeave: sickLeave?.length,
+                unpaidLeave: unpaidLeave?.length,
+                pendingLeaves: pendingLeaves?.length,
+                approvedLeaves: approvedLeaves?.length,
+                rejectedLeaves: rejectedLeaves?.length
+            }
+        }
+    } catch (error) {
+        return {
+            status: 400,
+            statusText: "Bad Request",
+            message: "Error during fetching the pending leaves by Types ...!"
         };
     }
 }

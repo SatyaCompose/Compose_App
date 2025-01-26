@@ -11,9 +11,9 @@ const routes = [
     { path: '/admin', router: adminRouter },
     { path: '/holidays', router: holidaysRouter },
     { path: '/user', router: userRouter },
+    { path: '/user/leaves', router: leaveRouter },
     { path: '/user/attendance', router: attendanceRouter },
     { path: '/user/notifications', router: notificationRouter },
-    { path: '/user/leave', router: leaveRouter },
 ];
 
 export default routes;

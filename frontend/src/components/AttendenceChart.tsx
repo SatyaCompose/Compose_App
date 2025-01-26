@@ -30,7 +30,7 @@ const AttendanceChart = () => {
                 toast.error('Error fetching attendance Status...!');
             }
         };
-
+        console.log("mo", monthlyStatus)
         const fetchYearlyStatus = async () => {
             try {
                 const data = await yearlyAttendanceStatus(selectedYear);
@@ -43,7 +43,6 @@ const AttendanceChart = () => {
             } catch (err) {
                 toast.error('Error fetching attendance Status...!');
             }
-
         }
         fetchMonthlyStatus();
         fetchYearlyStatus();
@@ -55,14 +54,12 @@ const AttendanceChart = () => {
         return <div>Loading...</div>;
     }
 
-
     const {
         actualWorkedHours = 0,
         totalRequiredHours = 0,
         attendancePercentage = 0,
         status = 'N/A',
     } = currentStatus as MonthlyStatus | YearlyStatus;
-
 
     const absent = actualWorkedHours > totalRequiredHours ? 0 : totalRequiredHours - actualWorkedHours;
 
@@ -84,8 +81,6 @@ const AttendanceChart = () => {
             color: '#ff9966',
         };
     }
-
-
 
     const chartData = {
         labels: ['Online', 'Offline'],

@@ -1,19 +1,19 @@
-import React, { useState } from "react";
+import React, { ChangeEvent, useState } from "react";
 import TextField from "@mui/material/TextField";
 
 interface CustomTextFieldProps {
     label: string;
     defaultValue: string;
     mb: number;
+    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-const CustomTextField: React.FC<CustomTextFieldProps> = ({ label, defaultValue, mb }) => {
-    const [value, setValue] = useState(defaultValue);
+const CustomTextField: React.FC<CustomTextFieldProps> = ({ label, defaultValue, mb, onChange }) => {
 
     return (
         <TextField
             label={label}
-            value={value}
+            defaultValue={defaultValue}
             fullWidth
             variant="outlined"
             sx={{
@@ -29,7 +29,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({ label, defaultValue, 
                     },
                 },
             }}
-            onChange={(e) => setValue(e.target.value)}// Reset focus state
+            onChange={onChange}// Reset focus state
         />
     );
 };

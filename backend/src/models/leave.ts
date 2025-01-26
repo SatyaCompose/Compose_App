@@ -32,6 +32,11 @@ const LeaveSchema = new mongoose.Schema(
             enum: ['Pending', 'Approved', 'Rejected'],
             default: 'Pending', // Default status is Pending
         },
+        leaveType: {
+            type: String,
+            enum: ['Paid Leave', 'Sick Leave', 'Unpaid Leave'],
+            required: [true, "Leave type is required"],
+        },
         user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User', // Reference to the employee requesting the leave
@@ -41,6 +46,7 @@ const LeaveSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User', // Reference to the admin/approver
             required: [true, "Approver reference is required"],
+            default: 'admin@compose.co.in'
         },
     },
     {

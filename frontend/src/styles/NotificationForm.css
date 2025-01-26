@@ -1,6 +1,6 @@
 /* NotificationForm.css */
 .form-div{
-    width: 150vh;
+    width: auto;
     flex-direction: column;
     display: flex;
     align-items: center;
@@ -9,14 +9,14 @@
 }
 
 .notification-form {
-    background-color: #DFF0D8;
+    background-color: white;
     border: 1px solid #ddd;
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     margin: 50px auto;
     padding: 40px;
     font-family: Arial, sans-serif;
-    width: 100vh;
+    width: auto;
     min-height: 50vh;
     font-size: 20px;
     font-weight: 500;
