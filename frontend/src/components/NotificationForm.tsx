@@ -1,19 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import logo from '../assets/logo.png';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import PersonIcon from '@mui/icons-material/Person';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import NotificationsIcon from '@mui/icons-material/Notifications';
-import LogoutIcon from '@mui/icons-material/Logout';
-import { Link } from 'react-router-dom';
-import '../styles/UserDashboard.css';
+import React, { useState } from 'react';
 import '../styles/NotificationForm.css'
 import Select from 'react-select';
 import Button from '@mui/material/Button';
-import NotificationIcon from './NotificationIcon';
-import { ProfileAvatar } from './ProfileAvatar';
-import { fetchUser } from '../services/user';
-import { User } from '../types/user';
 import Navbar from './Navbar';
 
 const NotificationForm = () => {
@@ -52,6 +40,54 @@ const NotificationForm = () => {
     const handleSubmit = (e: any) => {
         e.preventDefault();
     };
+    let leaveTypeInput: JSX.Element | null = null;
+
+    if (formData?.leaveType !== '') {
+        if (formData.leaveType === 'single') {
+            leaveTypeInput = (
+                <>
+                    <input
+                        type="date"
+                        name="Date"
+                        onChange={handleChange}
+                        onClick={handleDateInputClick}
+                        placeholder="Date"
+                        required
+                    />
+                    <input
+                        type="number"
+                        name="hours"
+                        onChange={handleChange}
+                        placeholder="No. of Hours"
+                        min="1"
+                        max="24"
+                        required
+                    />
+                </>
+            );
+        } else {
+            leaveTypeInput = (
+                <>
+                    <input
+                        type="date"
+                        name="startDate"
+                        onChange={handleChange}
+                        onClick={handleDateInputClick}
+                        placeholder="Start Date"
+                        required
+                    />
+                    <input
+                        type="date"
+                        name="endDate"
+                        onChange={handleChange}
+                        onClick={handleDateInputClick}
+                        placeholder="End Date"
+                        required
+                    />
+                </>
+            );
+        }
+    }
 
     return (
         <>
@@ -100,44 +136,7 @@ const NotificationForm = () => {
                                         <option value="single">Single Day Leave</option>
                                         <option value="long">Long Leave</option>
                                     </select>
-                                    {formData?.leaveType !== '' ? (
-                                        formData.leaveType === 'single' ? (
-                                            <>
-                                                <input
-                                                    type="date"
-                                                    name="Date"
-                                                    onChange={handleChange}
-                                                    onClick={handleDateInputClick}
-                                                    placeholder="Date"
-                                                    required />
-                                                <input
-                                                    type="number"
-                                                    name="hours"
-                                                    onChange={handleChange}
-                                                    placeholder="No. of Hours"
-                                                    min="1"
-                                                    max="24"
-                                                    required />
-                                            </>
-                                        ) : (
-                                            <>
-                                                <input
-                                                    type="date"
-                                                    name="startDate"
-                                                    onChange={handleChange}
-                                                    onClick={handleDateInputClick}
-                                                    placeholder="Start Date"
-                                                    required />
-                                                <input
-                                                    type="date"
-                                                    name="endDate"
-                                                    onChange={handleChange}
-                                                    onClick={handleDateInputClick}
-                                                    placeholder="End Date"
-                                                    required />
-                                            </>
-                                        )
-                                    ) : null}
+                                    {leaveTypeInput}
 
 
                                     <textarea
