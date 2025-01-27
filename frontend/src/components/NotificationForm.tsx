@@ -3,6 +3,8 @@ import '../styles/NotificationForm.css'
 import Select from 'react-select';
 import Button from '@mui/material/Button';
 import Navbar from './Navbar';
+import { Link } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; 
 
 const NotificationForm = () => {
     const [type, setType] = useState('');
@@ -36,7 +38,6 @@ const NotificationForm = () => {
         }));
     };
 
-    console.log("FORMDATA", formData)
     const handleSubmit = (e: any) => {
         e.preventDefault();
     };
@@ -98,7 +99,24 @@ const NotificationForm = () => {
                 <div className="main-content">
                     <div className='form-div'>
                         <form className='notification-form' onSubmit={handleSubmit}>
-                            <h1>Notification Form</h1>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '40px',
+                                height: '40px',
+                                border: '0.12rem solid green', // Green border
+                                borderRadius: '50%', // Makes it circular
+                                backgroundColor: 'white', // White background 
+                            }}>
+                                <Link to="/user/dashboard" className="view">
+                                    <ArrowBackIcon style={{ fontSize: '1.75rem' }} />
+                                </Link>
+                            </div>
+
+                                <h1 style={{ textAlign: 'center', flexGrow: 1, padding: 20 }}>Notification Form</h1>
+                        </div>
 
                             <Select
                                 placeholder="Type"

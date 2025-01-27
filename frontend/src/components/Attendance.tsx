@@ -14,10 +14,11 @@ import {
     Button,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import '../styles/Attendance.css'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'; 
 import { clockIn, clockOut, getAttendances } from '../services/attendance';
 import { CLOCK_IN_TEXT, FULL_ATTENDANCE_TEXT, getLast10Days, MINIMAL_ATTENDANCE_TEXT, NO_ATTENDANCE_TEXT, PARTIAL_ATTENDANCE_TEXT } from '../common/contstant';
 import Navbar from './Navbar';
+import { Link } from 'react-router-dom';
 
 const AttendancePage = () => {
     const clockInStatus = localStorage.getItem('clockin-status') ?? false;
@@ -115,7 +116,25 @@ const AttendancePage = () => {
             <div className="content-area" style={{ padding: 50, margin: 100 }}>
                 <div className="main-content">
                     <Box>
-                    <h1>Attendance Status</h1>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                            <div style={{
+                                display: 'flex',
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                width: '40px',
+                                height: '40px',
+                                border: '0.12rem solid green', // Green border
+                                borderRadius: '50%', // Makes it circular
+                                backgroundColor: 'white', // White background 
+                                }}>
+                                <Link to="/user/dashboard" className="view">
+                                    <ArrowBackIcon style={{ fontSize: '1.75rem' }} />
+                                </Link>
+                            </div>
+
+                            <h1 style={{ textAlign: 'center', flexGrow: 1 }}>Attendance Status</h1>
+                        </div>
+
                         {/* Clock-in/Clock-out Section */}
                         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: 2, backgroundColor: "#f5f5f5", borderRadius: 2 }}>
                             <Box>

@@ -1,6 +1,6 @@
 /* NotificationForm.css */
 .form-div{
-    width: auto;
+    width: 100% !important;
     flex-direction: column;
     display: flex;
     align-items: center;
@@ -16,7 +16,7 @@
     margin: 50px auto;
     padding: 40px;
     font-family: Arial, sans-serif;
-    width: auto;
+    width: 100%;
     min-height: 50vh;
     font-size: 20px;
     font-weight: 500;

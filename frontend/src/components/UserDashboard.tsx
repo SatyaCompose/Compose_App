@@ -8,6 +8,7 @@ import { getDashBoardHolidaysList } from '../services/holidays';
 import { Holiday } from '../types/holidays';
 import LeavesBar from './LeavesBar';
 import Navbar from './Navbar';
+import { Link } from 'react-router-dom';
 
 const UserDashboard = () => {
     const [user, setUser] = useState<User>({});
@@ -49,22 +50,34 @@ const UserDashboard = () => {
                     <h1>Welcome {user?.firstName}!!!</h1>
                     <div className="dashboard-grid">
                         <div className="box">
-                            <h2 style={{ padding: 30 }}>Attendance Status</h2>
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                                <Link to="/user/attendance" className="view"> View All </Link>
+                            </div>                            
+                            <h3>Attendance Status</h3>
                             <AttendanceChart />
                         </div>
 
                         <div className="box">
-                            <h2 style={{ padding: 30, gap: 0 }}>Up coming Holidays</h2>
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                                <Link to="/holidays" className="view"> View All </Link>
+                            </div> 
+                            <h3 style={{ padding: 30, gap: 0 }}>Up coming Holidays</h3>
                             <HolidaysBar holidays={holidays} />
                         </div>
 
                         <div className="box birthday-list">
-                            <h2>Upcoming Leaves</h2>
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                                <Link to="/user/leaves" className="view"> View All </Link>
+                            </div> 
+                            <h3>Upcoming Leaves</h3>
                             <LeavesBar />
                         </div>
 
                         <div className="box notifications">
-                            <h2>Skills Acquired</h2>
+                            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                                <Link to="/user/attendance" className="view"> View All </Link>
+                            </div> 
+                            <h3>Skills Acquired</h3>
                             {/* Content for Notifications */}
                         </div>
                     </div>

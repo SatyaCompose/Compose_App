@@ -11,6 +11,7 @@ import AttendancePage from './Attendance';
 import NotificationForm from './NotificationForm';
 import ErrorBoundary from './ErrorBoundary';
 import ProfilePage from './Profile';
+import { HolidaysPage } from './Holidays';
 
 function App() {
   return (
@@ -43,25 +44,33 @@ function App() {
           <Route
             path="/user/attendance"
             element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
                 <AttendancePage />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/user/notification-form"
             element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
               <NotificationForm />
-              // </ProtectedRoute>
+              </ProtectedRoute>
             }
           />
           <Route
             path="/user/profile"
             element={
-              // <ProtectedRoute>
+              <ProtectedRoute>
               <ProfilePage />
-              // </ProtectedRoute>
+             </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/holidays"
+            element={
+              <ProtectedRoute>
+                <HolidaysPage />
+              </ProtectedRoute>
             }
           />
         </Routes>
