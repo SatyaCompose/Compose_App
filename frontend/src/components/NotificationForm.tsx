@@ -1,26 +1,59 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../styles/NotificationForm.css'
 import Select from 'react-select';
 import Button from '@mui/material/Button';
 import Navbar from './Navbar';
 import { Link } from 'react-router-dom';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack'; 
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { fetchUser } from '../services/user';
+import { createLeave } from '../services/leaves';
 
 const NotificationForm = () => {
     const [type, setType] = useState('');
+    const [leavePeriod, setLeavePeriod] = useState('')
+    const [userEmail, setUserEmail] = useState('')
     const [formData, setFormData] = useState({
-        startDate: '',
-        endDate: '',
-        hours: '',
-        cause: '',
+        fromDate: '',
+        toDate: '',
+        noOfHours: '',
+        title: '',
+        description: '',
         leaveType: '',
-        date: '',
+        user: userEmail,
+        approver: 'admin@compose.co.in'
     });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await fetchUser();
+                if (data?.status === 200) {
+                    const userData = data?.data?.[0] || {};
+                    setUserEmail(userData?.email || '');
+                }
+            } catch (error) {
+                console.error("Error in fetchData:", error);
+            }
+        };
+        fetchData();
+    }, []); // Ensure this runs only once
+
 
     const options = [
         { value: "leave", label: "Leave" },
         { value: "working-hours", label: "Working Hours Adjustment" },
         { value: "general", label: "General" }
+    ];
+
+    const leaveTypes = [
+        { label: "Paid Leave", value: "Paid Leave" },
+        { label: "Sick Leave", value: "Sick Leave" },
+        { label: "Unpaid Leave", value: "Unpaid Leave" }
+    ];
+
+    const leavePeriodOptions = [
+        { label: "Single Day Leave", value: "single" },
+        { label: "Long Leave", value: "long" }
     ];
 
     const handleDateInputClick = (event: React.MouseEvent<HTMLInputElement>) => {
@@ -38,30 +71,55 @@ const NotificationForm = () => {
         }));
     };
 
-    const handleSubmit = (e: any) => {
+    useEffect(() => {
+        if (userEmail) {
+            setFormData((prev) => ({
+                ...prev,
+                user: userEmail,
+            }));
+        }
+    }, [userEmail]);
+    console.log("FORM", formData)
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (type === 'leave') {
+            if (!formData) {
+                console.error("Missing required fields for leave request");
+                return;
+            }
+
+            try {
+                const response = await createLeave(formData);
+                console.log('Leave request created:', response);
+            } catch (error) {
+                console.error('Error creating leave request:', error);
+            }
+        }
     };
+
     let leaveTypeInput: JSX.Element | null = null;
 
-    if (formData?.leaveType !== '') {
-        if (formData.leaveType === 'single') {
+    if (leavePeriod !== '') {
+        if (leavePeriod === 'single') {
             leaveTypeInput = (
                 <>
                     <input
-                        type="date"
-                        name="Date"
+                        type="Date"
+                        name="fromDate"
                         onChange={handleChange}
                         onClick={handleDateInputClick}
+                        style={{ padding: 10 }}
                         placeholder="Date"
                         required
                     />
                     <input
                         type="number"
-                        name="hours"
+                        name="noOfHours"
                         onChange={handleChange}
                         placeholder="No. of Hours"
                         min="1"
                         max="24"
+                        style={{ padding: 10 }}
                         required
                     />
                 </>
@@ -70,18 +128,20 @@ const NotificationForm = () => {
             leaveTypeInput = (
                 <>
                     <input
-                        type="date"
-                        name="startDate"
+                        type="Date"
+                        name="fromDate"
                         onChange={handleChange}
                         onClick={handleDateInputClick}
+                        style={{ padding: 10 }}
                         placeholder="Start Date"
                         required
                     />
                     <input
-                        type="date"
-                        name="endDate"
+                        type="Date"
+                        name="toDate"
                         onChange={handleChange}
                         onClick={handleDateInputClick}
+                        style={{ padding: 10 }}
                         placeholder="End Date"
                         required
                     />
@@ -99,24 +159,24 @@ const NotificationForm = () => {
                 <div className="main-content">
                     <div className='form-div'>
                         <form className='notification-form' onSubmit={handleSubmit}>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <div style={{
-                                display: 'flex',
-                                justifyContent: 'center',
-                                alignItems: 'center',
-                                width: '40px',
-                                height: '40px',
-                                border: '0.12rem solid green', // Green border
-                                borderRadius: '50%', // Makes it circular
-                                backgroundColor: 'white', // White background 
-                            }}>
-                                <Link to="/user/dashboard" className="view">
-                                    <ArrowBackIcon style={{ fontSize: '1.75rem' }} />
-                                </Link>
-                            </div>
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                <div style={{
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                    width: '40px',
+                                    height: '40px',
+                                    border: '0.12rem solid green', // Green border
+                                    borderRadius: '50%', // Makes it circular
+                                    backgroundColor: 'white', // White background 
+                                }}>
+                                    <Link to="/user/dashboard" className="view">
+                                        <ArrowBackIcon style={{ fontSize: '1.75rem' }} />
+                                    </Link>
+                                </div>
 
                                 <h1 style={{ textAlign: 'center', flexGrow: 1, padding: 20 }}>Notification Form</h1>
-                        </div>
+                            </div>
 
                             <Select
                                 placeholder="Type"
@@ -141,25 +201,71 @@ const NotificationForm = () => {
 
                             {type === 'leave' && (
                                 <>
-                                    <select
+                                    <Select
+                                        placeholder="Leave Type"
+                                        options={leaveTypes}
+                                        value={leaveTypes.find((type) => type.value === formData.leaveType) || null} // Ensures compatibility with controlled form inputs
                                         name="leaveType"
-                                        onChange={handleChange}
-                                        value={formData.leaveType || ""}
-                                        aria-labelledby="leaveTypeLabel"
+                                        onChange={(selectedOption) =>
+                                            handleChange({ target: { name: "leaveType", value: selectedOption?.value } } as any)
+                                        }
+                                        styles={{
+                                            control: (provided) => ({
+                                                ...provided,
+                                                borderColor: "#ccc",
+                                                borderRadius: "4px",
+                                                padding: "5px",
+                                                boxShadow: "none",
+                                            }),
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                backgroundColor: state.isFocused ? "#4CAF50" : "#fff",
+                                                color: state.isFocused ? 'white' : "#000",
+                                                cursor: "pointer",
+                                            })
+                                        }}
+                                        required />
+
+                                    <Select
+                                        name="leavePeriod"
+                                        placeholder="Leave Period"
+                                        options={leavePeriodOptions}
+                                        onChange={(selectedOption: { value: string; label: string } | null) =>
+                                            setLeavePeriod(selectedOption?.value ?? "")
+                                        }
+                                        value={leavePeriodOptions.find((option) => option.value === leavePeriod) || null}
+                                        styles={{
+                                            control: (provided) => ({
+                                                ...provided,
+                                                borderColor: "#ccc",
+                                                borderRadius: "4px",
+                                                padding: "5px",
+                                                boxShadow: "none",
+                                            }),
+                                            option: (provided, state) => ({
+                                                ...provided,
+                                                backgroundColor: state.isFocused ? "#4CAF50" : "#fff",
+                                                color: state.isFocused ? "white" : "#000",
+                                                cursor: "pointer",
+                                            }),
+                                        }}
                                         required
-                                    >
-                                        <option value="" disabled>
-                                            Select Leave Type
-                                        </option>
-                                        <option value="single">Single Day Leave</option>
-                                        <option value="long">Long Leave</option>
-                                    </select>
+                                    />
+
                                     {leaveTypeInput}
 
+                                    <input
+                                        placeholder='Title'
+                                        name='title'
+                                        onChange={handleChange}
+                                        style={{ padding: 10 }}
+                                        required
+                                    />
 
                                     <textarea
-                                        name="cause"
+                                        name="description"
                                         onChange={handleChange}
+                                        style={{ padding: 10 }}
                                         placeholder="Leave the Proper Reason here ...!"
                                         required />
                                 </>

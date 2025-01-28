@@ -5,27 +5,19 @@ const LeaveSchema = new mongoose.Schema(
         title: {
             type: String,
             required: [true, "Title is required"],
-            maxlength: [100, "Title cannot exceed 100 characters"],
-            trim: true,
         },
         description: {
             type: String,
             required: [true, "Description is required"],
-            maxlength: [1000, "Description cannot exceed 1000 characters"],
-            trim: true,
         },
         fromDate: {
-            type: Date,
-            required: [true, "From Date is required"],
+            type: String,
         },
         toDate: {
-            type: Date,
-            required: [true, "To Date is required"]
+            type: String,
         },
         noOfHours: {
-            type: Number,
-            required: true,
-            min: [1, "Minimum leave duration is 1 hour"],
+            type: String,
         },
         status: {
             type: String,
@@ -35,7 +27,6 @@ const LeaveSchema = new mongoose.Schema(
         leaveType: {
             type: String,
             enum: ['Paid Leave', 'Sick Leave', 'Unpaid Leave'],
-            required: [true, "Leave type is required"],
         },
         user: {
             type: mongoose.Schema.Types.ObjectId,
@@ -45,7 +36,7 @@ const LeaveSchema = new mongoose.Schema(
         approver: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User', // Reference to the admin/approver
-            required: [true, "Approver reference is required"],
+            // required: [true, "Approver reference is required"],
             default: 'admin@compose.co.in'
         },
     },

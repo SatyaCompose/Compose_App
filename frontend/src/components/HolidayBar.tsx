@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Holiday } from "../types/holidays";
 import '../styles/Holidays.css'
 

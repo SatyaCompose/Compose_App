@@ -38,9 +38,9 @@ leaveRouter.get('/get-rejected-leaves', async (req, res) => {
 
 leaveRouter.post('/request-leave', async (req, res) => {
     try {
-        const token = req.headers.authorization?.split(" ")?.[1] as string;
-        const { title, description, noOfHours, fromDate, toDate, approver } = req?.body ?? {}
-        const response = await createLeaveRequest(token, title, description, noOfHours, fromDate, toDate, approver);
+        // const token = req.headers.authorization?.split(" ")?.[1] as string;
+        const { title, description, noOfHours, fromDate, toDate, approver, user } = req?.body ?? {}
+        const response = await createLeaveRequest(title, description, noOfHours, fromDate, toDate, approver, user);
         res.json(response);
     } catch (err: any) {
         throw new Error("Error fetching Pending leaves..!");

@@ -30,7 +30,7 @@ const AttendanceChart = () => {
                 toast.error('Error fetching attendance Status...!');
             }
         };
-        console.log("mo", monthlyStatus)
+
         const fetchYearlyStatus = async () => {
             try {
                 const data = await yearlyAttendanceStatus(selectedYear);

@@ -12,6 +12,7 @@ import NotificationForm from './NotificationForm';
 import ErrorBoundary from './ErrorBoundary';
 import ProfilePage from './Profile';
 import { HolidaysPage } from './Holidays';
+import { LeavesPage } from './Leaves';
 
 function App() {
   return (
@@ -70,6 +71,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <HolidaysPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/user/leaves"
+            element={
+              <ProtectedRoute>
+                <LeavesPage />
               </ProtectedRoute>
             }
           />

@@ -2,23 +2,23 @@ import jwt from 'jsonwebtoken';
 import Leave from '../models/leave';
 import User from '../models/user'
 
-export const createLeaveRequest = async (title: string, description: string, fromDate: string, toDate: string, noOfHours: number, token: string, approver: string) => {
+export const createLeaveRequest = async (title: string, description: string, noOfHours: string, fromDate: string, toDate: string, approver: string, user: string) => {
     try {
-        const payload = jwt.decode(token);
-        const { email: senderEmail }: any = payload;
-        const user = await User.findOne({ email: senderEmail })
-        const approverData = await User.findOne({ email: approver })
+        const userData = await User.findOne({ email: user });
+        const approverData = await User.findOne({ email: approver });
+
         const leave = new Leave({
             title: title,
             description: description,
             fromDate: fromDate,
             toDate: toDate,
             noOfHours: noOfHours,
-            user: user?._id, // Employee's ObjectId
+            user: userData?._id,
             approver: approverData?._id,
             createdAt: new Date(),
             status: "Pending"
         });
+        console.log("LEave", leave)
         await leave.save();
         return {
             status: 200,
@@ -26,6 +26,7 @@ export const createLeaveRequest = async (title: string, description: string, fro
             data: leave
         }
     } catch (error) {
+        console.log("Error", error)
         return {
             status: 400,
             statusText: "Bad Request",
