@@ -28,6 +28,10 @@ export const LeavesPage = () => {
         setTabIndex(newValue);
     };
 
+    const dateTextMap = ['Created At', 'Last Updated At'];
+
+    const dateText = dateTextMap[tabIndex] || 'Last Updated At';
+
     return (
         <div>
             <Navbar />
@@ -42,11 +46,14 @@ export const LeavesPage = () => {
 
                         <Box className='UserData-Box' sx={{ mt: 4 }}>
                             <Box sx={{ textAlign: 'center', display: 'flex', flexDirection: 'column' }}>
+                                {leaves?.length > 0 ?
                                 <div className="leave-row" style={{ padding: 10 }}>
-                                    <span className="" style={{ flex: 1, padding: 10, fontSize: 18, fontWeight: 480 }}>created Date</span>
+                                    <span className="" style={{ flex: 1, padding: 10, fontSize: 18, fontWeight: 480 }}>{dateText}</span>
                                     <span className="leave-title" style={{ flex: 7, textAlign: 'center', padding: 10, fontSize: 18, fontWeight: 480 }}>Leave Title</span>
-                                    <span className="leave-status" style={{flex: 1, textAlign: 'center', padding: 10, fontSize: 20, fontWeight: 480}}>Leave Approval Status</span>
-                                </div>
+                                    <span className="leave-status" style={{flex: 1, textAlign: 'center', padding: 10, fontSize: 20, fontWeight: 480}}>Status</span>
+                                </div> 
+                                : null
+                                }
                                 {leaves?.map((leave: Leaves) => {
                                     return (
                                         <div key={leave._id} className="leave-row" style={{ padding: 10}}>
