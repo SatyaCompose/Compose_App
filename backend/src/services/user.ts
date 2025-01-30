@@ -73,6 +73,7 @@ export const updateUser = async (token: string, body: any) => {
             salaryInfo,
             gender,
             dateOfBirth,
+            skills,
         } = body
 
         const userExist = await User.findOne({ email });
@@ -94,7 +95,8 @@ export const updateUser = async (token: string, body: any) => {
                 ifscCode,
                 salaryInfo,
                 gender,
-                dateOfBirth
+                dateOfBirth,
+                skills,
             });
 
             const savedUser = await newUser.save();
@@ -123,7 +125,8 @@ export const updateUser = async (token: string, body: any) => {
                 ifscCode,
                 salaryInfo,
                 gender,
-                dateOfBirth
+                dateOfBirth,
+                skills,
             },
             { new: true } // Return the updated document
         );

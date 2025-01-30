@@ -1,29 +1,35 @@
-.css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input:focus{
+.css-16wblaj-MuiInputBase-input-MuiOutlinedInput-input:focus {
     border-color: #4CAF50 !important;
 }
 
-.css-1qltlow-MuiTabs-indicator{
+.css-1qltlow-MuiTabs-indicator {
     background-color: #4CAF50 !important;
 }
 
-.css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root{
+.css-1blp12k-MuiInputBase-root-MuiOutlinedInput-root {
     width: 400px !important;
     align-items: center !important;
 }
-.css-1usuzwp-MuiButtonBase-root-MuiTab-root.Mui-selected{
+
+.css-1usuzwp-MuiButtonBase-root-MuiTab-root.Mui-selected {
     color: #4CAF50 !important;
 }
-.css-1abvrni-MuiButtonBase-root-MuiButton-root{
+
+.css-1abvrni-MuiButtonBase-root-MuiButton-root {
     background-color: #4CAF50 !important;
 }
 
-.css-hoe9xz{
+.css-hoe9xz {
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
 }
 
-.css-dw14h1-MuiFormControl-root-MuiTextField-root{
+.css-dw14h1-MuiFormControl-root-MuiTextField-root {
     width: auto !important;
+}
+
+.css-19clj4e-MuiButtonBase-root-MuiIconButton-root:hover {
+    background-color: white !important;
 }

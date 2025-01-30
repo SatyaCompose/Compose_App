@@ -9,6 +9,7 @@ import { Holiday } from '../types/holidays';
 import LeavesBar from './LeavesBar';
 import Navbar from './Navbar';
 import { Link } from 'react-router-dom';
+import SkillsBar from './SkillsBar';
 
 const UserDashboard = () => {
     const [user, setUser] = useState<User>({});
@@ -52,7 +53,7 @@ const UserDashboard = () => {
                         <div className="box">
                             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                                 <Link to="/user/attendance" className="view"> View All </Link>
-                            </div>                            
+                            </div>
                             <h3>Attendance Status</h3>
                             <AttendanceChart />
                         </div>
@@ -60,7 +61,7 @@ const UserDashboard = () => {
                         <div className="box">
                             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                                 <Link to="/holidays" className="view"> View All </Link>
-                            </div> 
+                            </div>
                             <h3 style={{ padding: 30, gap: 0 }}>Up coming Holidays</h3>
                             <HolidaysBar holidays={holidays} />
                         </div>
@@ -68,17 +69,32 @@ const UserDashboard = () => {
                         <div className="box birthday-list">
                             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                                 <Link to="/user/leaves" className="view"> View All </Link>
-                            </div> 
+                            </div>
                             <h3>Upcoming Leaves</h3>
                             <LeavesBar />
                         </div>
 
                         <div className="box notifications">
-                            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-                                <Link to="/user/attendance" className="view"> View All </Link>
-                            </div> 
-                            <h3>Skills Acquired</h3>
-                            {/* Content for Notifications */}
+                            {/* {Array.isArray(user?.skills) && user?.skills?.length > 0 ? ( */}
+                            {user?.skills && user.skills.length > 0 ? (
+                                <>
+                                    <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                                        <Link to="/user/profile" className="view"> View All </Link>
+                                    </div>
+                                    <h3>Skills Acquired</h3>
+                                    <SkillsBar skills={user?.skills ?? [] as string[]} />
+                                </>
+                            ) : (
+                            <>
+                                <h3>No Skills Recorded</h3>
+                                <Link
+                                    to="/user/profile"
+                                    className="btn btn-success"
+                                > Add your Skills
+                                </Link>
+                            </>
+                            )
+                            }
                         </div>
                     </div>
                 </div>

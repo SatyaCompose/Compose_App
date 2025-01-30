@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { Tabs, Tab, Box, Button } from '@mui/material';
+import { Tabs, Tab, Box, Button, Dialog, DialogTitle, DialogContent, TextField, DialogActions, IconButton } from '@mui/material';
 import { ProfileAvatar } from './ProfileAvatar';
 import { fetchUser, updateUser } from '../services/user';
 import '../styles/Profile.css'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import CustomTextField from './ProfileTextField';
 import { User } from '../types/user';
 import Navbar from './Navbar';
+import SkillsBar from './SkillsBar';
 
 const ProfilePage = () => {
     const [tabIndex, setTabIndex] = useState(0);
     const [user, setUser] = useState<User>({});
+    const [newSkill, setNewSkill] = useState('');
+    const [openSkillDialog, setOpenSkillDialog] = useState(false);
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
@@ -24,7 +28,8 @@ const ProfilePage = () => {
         dateOfJoining: '',
         salaryInfo: '',
         bankAcNumber: '',
-        ifscCode: ''
+        ifscCode: '',
+        skills: []
     });
 
     // Fetch user data on mount
@@ -49,7 +54,8 @@ const ProfilePage = () => {
                         dateOfJoining: userData.dateOfJoining || '',
                         salaryInfo: userData.salaryInfo || '',
                         bankAcNumber: userData.bankAcNumber || '',
-                        ifscCode: userData.ifscCode || ''
+                        ifscCode: userData.ifscCode || '',
+                        skills: userData.skills || []
                     });
                 }
             } catch (error) {
@@ -69,7 +75,22 @@ const ProfilePage = () => {
         }));
     };
 
-    console.log("FormData", formData)
+    const handleAddSkill = () => {
+        if (newSkill.trim()) {
+            setFormData((prev: any) => ({
+                ...prev,
+                skills: [...prev.skills, newSkill.trim()]
+            }));
+            setNewSkill('');
+            setOpenSkillDialog(false);
+        }
+    };
+
+    const handleSkillDialogClose = () => {
+        setOpenSkillDialog(false);
+        setNewSkill('');
+    };
+
     // Handle Save Changes
     const handleSaveChanges = async () => {
         try {
@@ -147,11 +168,83 @@ const ProfilePage = () => {
                                         <CustomTextField label='IFSC code' defaultValue={formData?.ifscCode} mb={4} onChange={(e) => handleChange(e, 'ifscCode')} />
                                     </div>
 
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignSelf: 'center', gap: 40, }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, maxWidth: 840 }}>
+                                            {formData.skills?.length > 0 ? (
+                                                <div style={{ display: 'flex', flexDirection: 'column'}}>
+                                                    <div>
+                                                        <span className='skillheading' style={{ justifyContent: 'flex-start', fontSize: 20, fontWeight: 'bold', width: '100%' }}> Skills</span>
+                                                    </div>
+                                                    <div style={{ padding: 10 }}>
+                                                        <SkillsBar skills={formData.skills} />
+                                                        <IconButton onClick={() => setOpenSkillDialog(true)} sx={{ ml: 2 }}>
+                                                            <AddCircleOutlineIcon style={{ color: '#4CAF50', padding: 2 }} />
+                                                            <span className='skillbtn' style={{ fontSize: 20, color: '#4CAF50', padding: 2, fontWeight: 500 }}> Add Skill </span>
+                                                        </IconButton>
+
+                                                    </div>
+                                                    </div>
+                                            ) : (
+                                                <Box
+                                                    sx={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        cursor: 'pointer',
+                                                        '&:hover': { opacity: 0.8 }
+                                                    }}
+                                                    onClick={() => setOpenSkillDialog(true)}
+                                                >
+                                                    <AddCircleOutlineIcon sx={{ mr: 1 }} htmlColor='#4CAF50' />
+                                                    <span style={{ color: '#4CAF50' }}>Add Skill</span>
+                                                </Box>
+                                            )}
+                                        </Box>
+                                    </div>
+
+                                    {/* Add Skill Dialog */}
+                                    <Dialog open={openSkillDialog} onClose={handleSkillDialogClose}>
+                                        <DialogTitle>Add New Skill</DialogTitle>
+                                        <DialogContent>
+                                            <TextField
+                                                autoFocus
+                                                margin="dense"
+                                                label="Skill Name"
+                                                type="text"
+                                                fullWidth
+                                                variant="outlined"
+                                                value={newSkill}
+                                                sx={{
+                                                    mb: 4,
+                                                    "& .MuiOutlinedInput-root": {
+                                                        "&.Mui-focused fieldset": {
+                                                            borderColor: "#4CAF50", // Set border color to green when focused
+                                                        },
+                                                    },
+                                                    "& .MuiInputLabel-root": {
+                                                        "&.Mui-focused": {
+                                                            color: "#4CAF50", // Optional: Set label color to green when focused
+                                                        },
+                                                    },
+                                                }}
+                                                onChange={(e) => setNewSkill(e.target.value)}
+                                            />
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleSkillDialogClose} style={{ color: '#4CAF50' }}>Cancel</Button>
+                                            <Button onClick={handleAddSkill} variant="contained">Add</Button>
+                                        </DialogActions>
+                                    </Dialog>
+
                                     <Button variant="contained" style={{ marginTop: 20, width: '20%', alignSelf: 'center' }} onClick={handleSaveChanges}>Save Changes</Button>
                                 </Box>
                             )}
                             {tabIndex === 1 && (
-                                <Box>
+                                <Box sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}  >
                                     <CustomTextField label='Current Password' defaultValue='' mb={4} onChange={(e) => handleChange(e, 'currentPassword')} />
                                     <CustomTextField label='New Password' defaultValue='' mb={4} onChange={(e) => handleChange(e, 'NewPassword')} />
                                     <CustomTextField label='Confirm Password' defaultValue='' mb={4} onChange={(e) => handleChange(e, 'confirmPassword')} />
@@ -168,8 +261,8 @@ const ProfilePage = () => {
                             )}
                         </Box>
                     </Box>
-                </div>
-            </div>
+                </div >
+            </div >
         </>
     );
 };

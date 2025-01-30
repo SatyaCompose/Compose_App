@@ -5,7 +5,7 @@ interface CustomTextFieldProps {
     label: string;
     defaultValue: string;
     mb: number;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const CustomTextField: React.FC<CustomTextFieldProps> = ({ label, defaultValue, mb, onChange }) => {
@@ -13,7 +13,7 @@ const CustomTextField: React.FC<CustomTextFieldProps> = ({ label, defaultValue, 
     return (
         <TextField
             label={label}
-            defaultValue={defaultValue}
+            value={defaultValue}
             fullWidth
             variant="outlined"
             sx={{

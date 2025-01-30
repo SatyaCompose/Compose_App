@@ -60,7 +60,7 @@ export default mongoose.model("user", new mongoose.Schema({
     salaryInfo: {
         type: String,
     },
-    type: {
-        
+    skills: {
+       type: [String],
     }
 }));

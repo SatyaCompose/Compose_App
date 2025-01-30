@@ -17,4 +17,5 @@ export interface User{
     bankAcNumber?: string;
     ifscCode?: string;
     salaryInfo?: string;
+    skills?: string[];
 }
