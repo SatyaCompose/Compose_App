@@ -2,6 +2,17 @@ import jwt from 'jsonwebtoken';
 import Leave from '../models/leave';
 import User from '../models/user'
 
+/**
+ * create Leave
+ * @param title 
+ * @param description 
+ * @param noOfHours 
+ * @param fromDate 
+ * @param toDate 
+ * @param approver 
+ * @param user 
+ * @returns 
+ */
 export const createLeaveRequest = async (title: string, description: string, noOfHours: string, fromDate: string, toDate: string, approver: string, user: string) => {
     try {
         const userData = await User.findOne({ email: user });
@@ -35,6 +46,12 @@ export const createLeaveRequest = async (title: string, description: string, noO
     }
 };
 
+/**
+ * update leave
+ * @param leaveId 
+ * @param status 
+ * @returns 
+ */
 export const updateLeaveStatus = async (leaveId: string, status: string) => {
     try {
         const leave = await Leave.findByIdAndUpdate(
@@ -56,11 +73,15 @@ export const updateLeaveStatus = async (leaveId: string, status: string) => {
     }
 };
 
-export const fetchLeavesByStatus = async (token: string, status: string) => {
+/**
+ * Get leaves by status
+ * @param token 
+ * @param status 
+ * @returns 
+ */
+export const fetchLeavesByStatus = async (email: string, status: string) => {
     try {
-        const payload = jwt.decode(token);
-        const { email: senderEmail }: any = payload;
-        const user = await User.findOne({ email: senderEmail })
+        const user = await User.findOne({ email: email });
         const pendingLeaves = await Leave.find({ status: status, user: user?._id });
         return {
             status: 200,
@@ -76,11 +97,14 @@ export const fetchLeavesByStatus = async (token: string, status: string) => {
     }
 };
 
-export const fetchUserLeaves = async (token: string) => {
+/**
+ * Get User all leaves
+ * @param email 
+ * @returns 
+ */
+export const fetchUserLeaves = async (email: string) => {
     try {
-        const payload = jwt.decode(token);
-        const { email: senderEmail }: any = payload;
-        const user = await User.findOne({ email: senderEmail });
+        const user = await User.findOne({ email: email });
         const leaves = await Leave.find({ user: user?._id });
         return {
             status: 200,
@@ -96,6 +120,11 @@ export const fetchUserLeaves = async (token: string) => {
     }
 }
 
+/**
+ * Get all Admin inbox leaves
+ * @param token 
+ * @returns 
+ */
 export const fetchAdminInboxLeaves = async (token: string) => {
     try {
         const payload = jwt.decode(token);
@@ -116,11 +145,14 @@ export const fetchAdminInboxLeaves = async (token: string) => {
     }
 }
 
-export const fetchLeavesByTypes = async(token: string) => {
+/**
+ * fetch leaves by types
+ * @param token 
+ * @returns 
+ */
+export const fetchLeavesByTypes = async(email: string) => {
     try {
-        const payload = jwt.decode(token);
-        const { email: senderEmail }: any = payload;
-        const user = await User.findOne({ email: senderEmail });
+        const user = await User.findOne({ email: email });
         const leaves = await Leave.find({ user: user?._id });
         const paidLeaves = leaves.filter((data) => {
             return data?.leaveType === 'Paid Leave';

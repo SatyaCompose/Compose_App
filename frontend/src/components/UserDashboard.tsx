@@ -70,7 +70,7 @@ const UserDashboard = () => {
                             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                                 <Link to="/user/leaves" className="view"> View All </Link>
                             </div>
-                            <h3>Upcoming Leaves</h3>
+                            <h3>Leaves Data</h3>
                             <LeavesBar />
                         </div>
 

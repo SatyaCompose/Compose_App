@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { createLeaveRequest, fetchAdminInboxLeaves, fetchLeavesByStatus, fetchLeavesByTypes, fetchUserLeaves, updateLeaveStatus } from "../services/leave";
+import { extractemail } from "./user";
 
 export const leaveRouter = Router();
 
@@ -7,7 +8,8 @@ leaveRouter.get('/get-pending-leaves', async (req, res) => {
     try {
         const status = "Pending";
         const token = req.headers.authorization?.split(" ")?.[1] as string;
-        const response = await fetchLeavesByStatus(token, status);
+        const email = extractemail(token);
+        const response = await fetchLeavesByStatus(email, status);
         res.json(response);
     } catch (err: any) {
         throw new Error("Error fetching Pending leaves..!");
@@ -18,7 +20,8 @@ leaveRouter.get('/get-approved-leaves', async (req, res) => {
     try {
         const status = "Approved";
         const token = req.headers.authorization?.split(" ")?.[1] as string;
-        const response = await fetchLeavesByStatus(token, status);
+        const email = extractemail(token);
+        const response = await fetchLeavesByStatus(email, status);
         res.json(response);
     } catch (err: any) {
         throw new Error("Error fetching Pending leaves..!");
@@ -29,7 +32,8 @@ leaveRouter.get('/get-rejected-leaves', async (req, res) => {
     try {
         const status = "Rejected";
         const token = req.headers.authorization?.split(" ")?.[1] as string;
-        const response = await fetchLeavesByStatus(token, status);
+        const email = extractemail(token)
+        const response = await fetchLeavesByStatus(email, status);
         res.json(response);
     } catch (err: any) {
         throw new Error("Error fetching Pending leaves..!");

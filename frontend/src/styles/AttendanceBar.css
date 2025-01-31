@@ -1,0 +1,28 @@
+.attendace-list {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    max-height: 200px;
+    width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+.attendace-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px 0;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    word-wrap: normal;
+}
+
+.attendace-date {
+    font-weight: bold;
+    color: #4CAF50;
+    padding-right: 30px;
+}

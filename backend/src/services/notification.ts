@@ -2,6 +2,16 @@ import jwt from 'jsonwebtoken';
 import Notification from '../models/notification';
 import User from '../models/user'
 
+/**
+ * create notifivations in database
+ * @param recipients 
+ * @param title 
+ * @param subject 
+ * @param body 
+ * @param isBroadcast 
+ * @param senderEmail 
+ * @returns 
+ */
 const sendEmail = async (recipients: any, title: string, subject: string, body: string, isBroadcast: boolean, senderEmail: string) => {
     const notifications = recipients.map((email: any) => ({
         from: senderEmail,
@@ -18,6 +28,11 @@ const sendEmail = async (recipients: any, title: string, subject: string, body: 
 };
 
 
+/**
+ * get notifications by email
+ * @param token 
+ * @returns 
+ */
 export const getNotifications = async (token: string) => {
     try {
         const payload = jwt.decode(token);
@@ -39,6 +54,16 @@ export const getNotifications = async (token: string) => {
     }
 };
 
+/**
+ * create Notifications
+ * @param body 
+ * @param title 
+ * @param subject 
+ * @param isAnnouncement 
+ * @param recipients 
+ * @param token 
+ * @returns 
+ */
 export const sendNotifications = async (body: string, title: string, subject: any, isAnnouncement: boolean, recipients: string[], token: string) => {
     try {
         let recipientsData = [];
@@ -79,6 +104,11 @@ export const sendNotifications = async (body: string, title: string, subject: an
     }
 };
 
+/**
+ * marks as read
+ * @param notificationId 
+ * @returns 
+ */
 export const markAsRead = async (notificationId: string) => {
     try {
         const ids = notificationId.split('|')?.map((id) => id.trim());

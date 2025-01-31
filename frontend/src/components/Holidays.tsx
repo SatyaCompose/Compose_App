@@ -18,7 +18,7 @@ export const HolidaysPage = () => {
         }
         fetchHolidays()
     }, [])
-    console.log("Holidays", holidays)
+
     const midIndex = Math.ceil(holidays.length / 2);
     const table1Holidays = holidays.slice(0, midIndex);
     const table2Holidays = holidays.slice(midIndex);

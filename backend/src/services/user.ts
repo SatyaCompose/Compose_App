@@ -1,11 +1,12 @@
 import User from '../models/user';
-import jwt from 'jsonwebtoken'
 
-export const fetchUser = async (token: string) => {
+/**
+ * Fetch user By email
+ * @param email 
+ * @returns 
+ */
+export const fetchUser = async (email: string) => {
     try {
-        const payload = jwt.decode(token);
-        const { email }: any = payload;
-
         const res = await User.find({ email });
 
         return {
@@ -22,11 +23,13 @@ export const fetchUser = async (token: string) => {
     }
 }
 
-export const createUser = async (token: string) => {
+/**
+ * Create user while register
+ * @param email 
+ * @returns 
+ */
+export const createUser = async (email: string) => {
     try {
-        const payload = jwt.decode(token);
-        const { email }: any = payload;
-
         const userExist = await User.find({ email });
 
         if (userExist) {
@@ -52,11 +55,14 @@ export const createUser = async (token: string) => {
     }
 }
 
-export const updateUser = async (token: string, body: any) => {
+/**
+ * Update user by email
+ * @param email 
+ * @param body 
+ * @returns 
+ */
+export const updateUser = async (email: string, body: any) => {
     try {
-        const payload = jwt.decode(token);
-        const { email }: any = payload;
-
         const {
             firstName,
             lastName,
@@ -77,7 +83,7 @@ export const updateUser = async (token: string, body: any) => {
         } = body
 
         const userExist = await User.findOne({ email });
-        console.log("USER", userExist)
+
         if (!userExist) {
             const newUser = new User({
                 email,
@@ -145,11 +151,14 @@ export const updateUser = async (token: string, body: any) => {
     }
 }
 
-export const uploadImage = async (token: string, file: any) => {
+/**
+ * Upload image for user
+ * @param email 
+ * @param file 
+ * @returns 
+ */
+export const uploadImage = async (email: string, file: any) => {
     try {
-        const payload = jwt.decode(token);
-        const { email }: any = payload;
-
         const res = await User.findOneAndUpdate(
             { email },
             {
@@ -158,10 +167,10 @@ export const uploadImage = async (token: string, file: any) => {
                     contentType: file.mimetype
                 }
             },
-            { new: true } 
+            { new: true }
         );
 
-        return{
+        return {
             status: 200,
             message: "Image uploaded successfully..!",
             data: res
@@ -172,5 +181,35 @@ export const uploadImage = async (token: string, file: any) => {
             statusText: "Bad request",
             message: "Something went wrong during fetchUser..!"
         }
+    }
+}
+
+/**
+ * Get multiple users by emails Array
+ * @param emails 
+ * @returns 
+ */
+export const getMultipleUsers = async (emails: string[]) => {
+    try {
+        const users = await User.find({ email: { $in: emails } });
+        return users;
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return [];
+    }
+}
+
+/**
+ * Get All users except current user
+ * @param email 
+ * @returns 
+ */
+export const getAllUsers = async (email: string) => {
+    try {
+        const users = await User.find({ email: { $ne: email } });
+        return users;
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return [];
     }
 }

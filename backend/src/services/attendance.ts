@@ -1,17 +1,15 @@
 import Attendance from '../models/attendence';
 import CompanyHoliday from '../models/Holidays'
-import jwt from 'jsonwebtoken';
 import { DAILY_WORK_HOURS } from '../common/constant';
+import { getAllUsers, getMultipleUsers } from './user';
 
 const calculateTotalHours = (clockIn: Date, clockOut: Date): number => {
     const hours = (clockOut.getTime() - clockIn.getTime()) / (1000 * 60 * 60);
     return Math.round(hours * 100) / 100;
 };
 
-export const clockIn = async (token: string) => {
+export const clockIn = async (email: string) => {
     try {
-        const payload = jwt.decode(token);
-        const { email }: any = payload;
         const clockIn = new Date();
 
         // Find attendance for today
@@ -49,10 +47,8 @@ export const clockIn = async (token: string) => {
     }
 };
 
-export const clockOut = async (token: string) => {
+export const clockOut = async (email: string) => {
     try {
-        const payload = jwt.decode(token);
-        const { email }: any = payload;
         const clockOut = new Date();
 
         // Find today's attendance record
@@ -128,10 +124,8 @@ export const getWorkingDaysInMonth = async (year: number, month: number): Promis
     return workingDays;
 };
 
-export const calculateMonthlyAttendance = async (token: string, year: number, month: number) => {
+export const calculateMonthlyAttendance = async (email: string, year: number, month: number) => {
     try {
-        const payload = jwt.decode(token);
-        const { email }: any = payload;
         const workingDays = await getWorkingDaysInMonth(year, month);
         const totalRequiredHours = workingDays * DAILY_WORK_HOURS;
 
@@ -175,12 +169,8 @@ export const calculateMonthlyAttendance = async (token: string, year: number, mo
     }
 };
 
-export const calculateYearlyAttendance = async (token: string, year: string) => {
+export const calculateYearlyAttendance = async (email: string, year: string) => {
     try {
-
-        const payload = jwt.decode(token);
-        const { email }: any = payload;
-
         let totalRequiredHours = 0;
         let actualWorkedHours = 0;
 
@@ -232,10 +222,8 @@ export const calculateYearlyAttendance = async (token: string, year: string) => 
     }
 };
 
-export const getAttendance = async (token: string) => {
+export const getAttendance = async (email: string) => {
     try{
-        const payload = jwt.decode(token);
-        const { email }: any = payload;
         const response = await Attendance.find({email});
         return{
             status: 200,
@@ -248,5 +236,62 @@ export const getAttendance = async (token: string) => {
             statusText: "Internal Server Error",
             message: "Error fetching attendance..!",
         };
+    }
+}
+
+export const getClockedInUsersList = async () => {
+    try {
+        const response = await Attendance.find(
+            {
+                sessions: {
+                    $elemMatch: {
+                        clockIn: { $ne: null },
+                        clockOut: null
+                    }
+                }
+            },
+            { email: 1, _id: 0, "sessions.$": 1 } // Project only `email`, exclude `_id`
+        );
+
+        const emails = response.map((user) => user.email);
+        const sessions = response?.map((user) => {
+            return {
+                email: user?.email,
+                clockedInTime: new Date(user?.sessions?.[0]?.clockIn).toLocaleString('en-GB')
+            }
+        });
+
+        const data = await getMultipleUsers(emails);
+        const clockedInData = data.map((user) => {
+            const userSessions = sessions.find((session) => session.email === user.email);
+            return {
+                user: user,
+                clockedInTime: userSessions?.clockedInTime
+            };
+        });
+        console.log("clockedInData", clockedInData) 
+
+        return {
+            status: 200,
+            message: "Clocked in users fetched successfully",
+            data: clockedInData
+        };
+    } catch (error: any) {
+        return {
+            status: 500,
+            statusText: "Internal Server Error",
+            message: "Error fetching clocked in users..!",
+        };
+    }
+};
+
+export const getAllUsersAttendanceList = async (email: string) =>{
+    try{
+        const users = await getAllUsers(email);
+        const emails = users.map((user) => user.email);
+        // const monthlyStatus = 
+
+    }catch(error){
+        console.log(error)
     }
 }

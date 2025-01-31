@@ -23,4 +23,9 @@ export const clockIn = async () => {
 export const clockOut = async () => {
     const response = await apiClient.get('/user/attendance/clock-out');
     return response.data;
-}
+};
+
+export const getClockedInUsers = async () => {
+    const response = await apiClient.get('/admin/attendance/get-clocked-in-users');
+    return response.data;
+};
