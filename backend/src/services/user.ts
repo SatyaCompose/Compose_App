@@ -1,11 +1,11 @@
 import User from '../models/user';
-
+import { Response } from '../common/response';
 /**
  * Fetch user By email
  * @param email 
  * @returns 
  */
-export const fetchUser = async (email: string) => {
+export const fetchUser = async (email: string): Promise<Response> => {
     try {
         const res = await User.find({ email });
 
@@ -28,7 +28,7 @@ export const fetchUser = async (email: string) => {
  * @param email 
  * @returns 
  */
-export const createUser = async (email: string) => {
+export const createUser = async (email: string): Promise<Response> =>  {
     try {
         const userExist = await User.find({ email });
 
@@ -61,7 +61,7 @@ export const createUser = async (email: string) => {
  * @param body 
  * @returns 
  */
-export const updateUser = async (email: string, body: any) => {
+export const updateUser = async (email: string, body: any): Promise<Response> => {
     try {
         const {
             firstName,
@@ -157,7 +157,7 @@ export const updateUser = async (email: string, body: any) => {
  * @param file 
  * @returns 
  */
-export const uploadImage = async (email: string, file: any) => {
+export const uploadImage = async (email: string, file: any): Promise<Response> => {
     try {
         const res = await User.findOneAndUpdate(
             { email },
@@ -189,13 +189,21 @@ export const uploadImage = async (email: string, file: any) => {
  * @param emails 
  * @returns 
  */
-export const getMultipleUsers = async (emails: string[]) => {
+export const getMultipleUsers = async (emails: string[]): Promise<Response> => {
     try {
         const users = await User.find({ email: { $in: emails } });
-        return users;
+        return {
+            status: 200,
+            message: "Users fetched successfully..!",
+            data: users
+        }
     } catch (error) {
         console.error("Error fetching users:", error);
-        return [];
+        return {
+            status: 400,
+            statusText: "Bad request",
+            message: "Something went wrong during fetchUser..!"
+        }
     }
 }
 
@@ -204,12 +212,20 @@ export const getMultipleUsers = async (emails: string[]) => {
  * @param email 
  * @returns 
  */
-export const getAllUsers = async (email: string) => {
+export const getAllUsers = async (email: string): Promise<Response> => {
     try {
         const users = await User.find({ email: { $ne: email } });
-        return users;
+        return {
+            status: 200,
+            message: "Users fetched successfully..!",
+            data: users
+        };
     } catch (error) {
         console.error("Error fetching users:", error);
-        return [];
+        return{
+            status: 400,
+            statusText: "Bad request",
+            message: "Something went wrong during fetchUser..!"
+        }
     }
-}
+};

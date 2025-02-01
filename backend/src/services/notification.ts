@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import Notification from '../models/notification';
 import User from '../models/user'
+import { Response } from '../common/response';
 
 /**
  * create notifivations in database
@@ -33,7 +34,7 @@ const sendEmail = async (recipients: any, title: string, subject: string, body: 
  * @param token 
  * @returns 
  */
-export const getNotifications = async (token: string) => {
+export const getNotifications = async (token: string): Promise<Response> => {
     try {
         const payload = jwt.decode(token);
         const { email }: any = payload;
@@ -64,7 +65,7 @@ export const getNotifications = async (token: string) => {
  * @param token 
  * @returns 
  */
-export const sendNotifications = async (body: string, title: string, subject: any, isAnnouncement: boolean, recipients: string[], token: string) => {
+export const sendNotifications = async (body: string, title: string, subject: any, isAnnouncement: boolean, recipients: string[], token: string): Promise<Response> => {
     try {
         let recipientsData = [];
         const payload = jwt.decode(token);
@@ -109,7 +110,7 @@ export const sendNotifications = async (body: string, title: string, subject: an
  * @param notificationId 
  * @returns 
  */
-export const markAsRead = async (notificationId: string) => {
+export const markAsRead = async (notificationId: string): Promise<Response> => {
     try {
         const ids = notificationId.split('|')?.map((id) => id.trim());
 
@@ -133,6 +134,7 @@ export const markAsRead = async (notificationId: string) => {
             return {
                 status: 400,
                 message: 'No valid notification IDs provided',
+                data: []
             };
         }
 
@@ -140,7 +142,7 @@ export const markAsRead = async (notificationId: string) => {
         return {
             status: 400,
             message: 'Error marking notification as read',
-            error: error
+            data: error
         };
     }
 };

@@ -2,13 +2,16 @@ import Attendance from '../models/attendence';
 import CompanyHoliday from '../models/Holidays'
 import { DAILY_WORK_HOURS } from '../common/constant';
 import { getAllUsers, getMultipleUsers } from './user';
+import { Response } from '../common/response';
+import { User } from '../types/user';
+import { ClockedInUsers } from '../types/attendance';
 
 const calculateTotalHours = (clockIn: Date, clockOut: Date): number => {
     const hours = (clockOut.getTime() - clockIn.getTime()) / (1000 * 60 * 60);
     return Math.round(hours * 100) / 100;
 };
 
-export const clockIn = async (email: string) => {
+export const clockIn = async (email: string): Promise<Response> => {
     try {
         const clockIn = new Date();
 
@@ -47,7 +50,7 @@ export const clockIn = async (email: string) => {
     }
 };
 
-export const clockOut = async (email: string) => {
+export const clockOut = async (email: string): Promise<Response> => {
     try {
         const clockOut = new Date();
 
@@ -124,7 +127,7 @@ export const getWorkingDaysInMonth = async (year: number, month: number): Promis
     return workingDays;
 };
 
-export const calculateMonthlyAttendance = async (email: string, year: number, month: number) => {
+export const calculateMonthlyAttendance = async (email: string, year: number, month: number): Promise<Response> => {
     try {
         const workingDays = await getWorkingDaysInMonth(year, month);
         const totalRequiredHours = workingDays * DAILY_WORK_HOURS;
@@ -169,7 +172,7 @@ export const calculateMonthlyAttendance = async (email: string, year: number, mo
     }
 };
 
-export const calculateYearlyAttendance = async (email: string, year: string) => {
+export const calculateYearlyAttendance = async (email: string, year: string): Promise<Response> => {
     try {
         let totalRequiredHours = 0;
         let actualWorkedHours = 0;
@@ -193,7 +196,7 @@ export const calculateYearlyAttendance = async (email: string, year: string) => 
             }, 0);
         }
 
-        const attendancePercentage =  actualWorkedHours > totalRequiredHours ? 100 : ((actualWorkedHours / totalRequiredHours) * 100);
+        const attendancePercentage = actualWorkedHours > totalRequiredHours ? 100 : ((actualWorkedHours / totalRequiredHours) * 100);
 
         const status = `${Math.round(attendancePercentage)}%`;
 
@@ -202,16 +205,16 @@ export const calculateYearlyAttendance = async (email: string, year: string) => 
         return {
             status: 200,
             message: "yearly status fetched successfully..!",
-            data: 
+            data:
             {
-            email,
-            year,
-            totalRequiredHours,
-            actualWorkedHours,
-            difference,
-            attendancePercentage: Math.round(attendancePercentage),
-            status
-        }
+                email,
+                year,
+                totalRequiredHours,
+                actualWorkedHours,
+                difference,
+                attendancePercentage: Math.round(attendancePercentage),
+                status
+            }
         };
     } catch (error) {
         return {
@@ -222,24 +225,29 @@ export const calculateYearlyAttendance = async (email: string, year: string) => 
     }
 };
 
-export const getAttendance = async (email: string) => {
-    try{
-        const response = await Attendance.find({email});
-        return{
+export const getAttendance = async (email: string): Promise<Response> => {
+    try {
+        const response = await Attendance.find({ email });
+        return {
             status: 200,
             message: "Attendance fetched successfully",
             data: response
         }
-    }catch(error: any){
+    } catch (error: any) {
         return {
             status: 500,
             statusText: "Internal Server Error",
             message: "Error fetching attendance..!",
+            data: error
         };
     }
 }
 
-export const getClockedInUsersList = async () => {
+/**
+ * get Clocked in users list foe ADMIN
+ * @returns 
+ */
+export const getClockedInUsersList = async (): Promise<Response> => {
     try {
         const response = await Attendance.find(
             {
@@ -262,14 +270,14 @@ export const getClockedInUsersList = async () => {
         });
 
         const data = await getMultipleUsers(emails);
-        const clockedInData = data.map((user) => {
+        const clockedInData = data?.data.map((user: User) => {
             const userSessions = sessions.find((session) => session.email === user.email);
             return {
                 user: user,
                 clockedInTime: userSessions?.clockedInTime
             };
         });
-        console.log("clockedInData", clockedInData) 
+        console.log("clockedInData", clockedInData)
 
         return {
             status: 200,
@@ -285,13 +293,53 @@ export const getClockedInUsersList = async () => {
     }
 };
 
-export const getAllUsersAttendanceList = async (email: string) =>{
-    try{
-        const users = await getAllUsers(email);
-        const emails = users.map((user) => user.email);
-        // const monthlyStatus = 
+/**
+ * Get users attendance list for admin
+ * @param email 
+ */
+export const getAllUsersAttendanceList = async (email: string) => {
+    try {
+        let clockedInTimeData: string = '';
+        let userName: string = '';
+        let userId: string = '';
 
-    }catch(error){
-        console.log(error)
+        const users = await getAllUsers(email);
+        const emails = users?.data?.map((user: User) => user.email);
+        const clockedInStatus = await getClockedInUsersList();
+
+        const promise = emails?.map(async (email: string) => {
+            const monthlyStatus = await calculateMonthlyAttendance(email, new Date().getFullYear(), new Date().getMonth());
+            const yearlyStatus = await calculateYearlyAttendance(email, new Date().getFullYear().toString());
+            clockedInStatus?.data?.map((status: ClockedInUsers) => {
+                if (status?.user?.email === email) {
+                    clockedInTimeData = status.clockedInTime;
+                    userName = `${status?.user?.firstName} ${status?.user?.lastName}`;
+                    userId = status?.user?._id as string;
+                }
+            });
+
+            return {
+                userId: userId,
+                email: email,
+                monthlyStatus: monthlyStatus?.data,
+                yearlyStatus: yearlyStatus?.data,
+                userName: userName,
+                clcokedInTime: clockedInTimeData,
+            }
+        })
+
+        const response = Promise.all(promise);
+        return {
+            status: 200,
+            message: "Attendance fetched successfully",
+            data: response
+        }
+    } catch (error: any) {
+        return {
+            status: 500,
+            statusText: "Internal Server Error",
+            message: "Error fetching attendance..!",
+            data: error
+        };
     }
 }

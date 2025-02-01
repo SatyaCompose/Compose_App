@@ -1,5 +1,6 @@
 import { NO_OF_HOLIDAYS } from '../common/constant';
 import CompanyHoliday from '../models/Holidays'; // Import your CompanyHoliday model
+import { Response } from '../common/response';
 
 interface Holidays {
     date: string;
@@ -11,9 +12,9 @@ interface Holidays {
  * @param holidays 
  * @returns 
  */
-export const uploadHolidays = async (holidays: Holidays[]) => {
+export const uploadHolidays = async (holidays: Holidays[]): Promise<Response> => {
     try {
-        console.log("H", holidays)
+
         const formattedHolidays = holidays.map((holiday: Holidays) => {
             const [day, month, year] = holiday.date.split('/');
             const formattedDate = new Date(`${year}-${month}-${day}`); // Convert to yyyy-mm-dd
@@ -31,6 +32,11 @@ export const uploadHolidays = async (holidays: Holidays[]) => {
         };
     } catch (error) {
         console.error('Error adding holidays:', error);
+        return {
+            status: 400,
+            message: "Error adding holidays",
+            data: error
+        };
     }
 };
 
@@ -38,11 +44,11 @@ export const uploadHolidays = async (holidays: Holidays[]) => {
  * Get 5 Holidays list
  * @returns 
  */
-export const getDashBoardHolidaysList = async () => {
+export const getDashBoardHolidaysList = async (): Promise<Response> => {
     try {
         const today = new Date(); // Get today's date
         today.setHours(0, 0, 0, 0); // Normalize to the start of the day
-        console.log("DATE", today)
+
         // Fetch the next 5 holidays
         const nextHolidays = await CompanyHoliday.find({ date: { $gte: today } })
             .sort({ date: 1 }) // Sort by date in ascending order
@@ -57,7 +63,7 @@ export const getDashBoardHolidaysList = async () => {
         return {
             status: 500,
             message: 'Error fetching holidays...!',
-            error: error,
+            data: error,
         };
     }
 }
@@ -66,7 +72,7 @@ export const getDashBoardHolidaysList = async () => {
  * Get all Holidays list
  * @returns 
  */
-export const getHolidays = async () => {
+export const getHolidays = async (): Promise<Response> => {
     try {
         const today = new Date(); // Get today's date
         today.setHours(0, 0, 0, 0); // Reset time to midnight for comparison
@@ -83,7 +89,7 @@ export const getHolidays = async () => {
         return {
             status: 500,
             message: "Error fetching holidays...!",
-            error: error,
+            data: error,
         };
     }
 };

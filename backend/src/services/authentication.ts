@@ -1,9 +1,10 @@
 import User from '../models/user';
 import jwt from 'jsonwebtoken';
+import { Response } from '../common/response';
 
 const blacklist: Set<string> = new Set();
 
-export const registeUser = async (payload: any) => {
+export const registeUser = async (payload: any): Promise<Response> => {
     try {
         const match = await User.findOne({ email: payload.email });
         if (match) {
@@ -16,7 +17,7 @@ export const registeUser = async (payload: any) => {
         const data = await User.create(payload);
         return {
             status: 200,
-            statusText: 'User Registered Successfully..!',
+            message: 'User Registered Successfully..!',
             data: data
         };
 
@@ -26,11 +27,12 @@ export const registeUser = async (payload: any) => {
             status: 500,
             statusText: "Internal Server Error",
             message: "Something went wrong during register..!",
+            data: err
         };
     }
 }
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (email: string, password: string): Promise<Response> => {
     try {
         const userExist = await User.findOne({ email: email });
         if (!userExist) {
@@ -81,7 +83,7 @@ export const loginUser = async (email: string, password: string) => {
     }
 };
 
-export const refreshAccessToken = async (token: string) => {
+export const refreshAccessToken = async (token: string): Promise<Response> => {
     try {
         const payload = jwt.verify(token, 'refresh_token_secret') as jwt.JwtPayload;
 
@@ -115,7 +117,7 @@ export const refreshAccessToken = async (token: string) => {
     }
 };
 
-export const logoutUser = async (token: any) => {
+export const logoutUser = async (token: any): Promise<Response> => {
     if (!token) {
         return {
             status: 403,
@@ -152,7 +154,7 @@ export const verifyToken = (token: string) => {
     }
 };
 
-export const refreshToken = async() => {
+export const refreshToken = async (): Promise<Response> => {
     try{
         const newAccessToken = jwt.sign(
             { company: "Compose", type: "refresh" },

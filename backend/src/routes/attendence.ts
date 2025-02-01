@@ -1,6 +1,5 @@
 import { Router } from "express";
 import { calculateMonthlyAttendance, calculateYearlyAttendance, clockIn, clockOut, getAttendance } from "../services/attendance";
-import jwt from 'jsonwebtoken'
 import { extractemail } from "./user";
 
 const attendanceRouter = Router();

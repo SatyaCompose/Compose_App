@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { User } from "../types/user";
 import { fetchClockedInusers } from "../services/admin";
 import "../styles/AttendanceBar.css";
+import { ClockedInUsers } from "../types/attendance";
 
-interface ClockedInUsers{
-    user: User;
-    clockedInTime: string;
-}
 const AttendanceBar = () => {
     const [clockedInUsers, setClockedInUsers] = useState<ClockedInUsers[]>([]);
 
