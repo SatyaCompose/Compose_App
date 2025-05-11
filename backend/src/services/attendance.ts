@@ -123,7 +123,7 @@ export const getWorkingDaysInMonth = async (year: number, month: number): Promis
         }
         date.setUTCDate(date.getUTCDate() + 1);
     }
-
+    console.log("DAYS", year, month, workingDays)
     return workingDays;
 };
 
@@ -277,7 +277,6 @@ export const getClockedInUsersList = async (): Promise<Response> => {
                 clockedInTime: userSessions?.clockedInTime
             };
         });
-        console.log("clockedInData", clockedInData)
 
         return {
             status: 200,
@@ -328,7 +327,8 @@ export const getAllUsersAttendanceList = async (email: string) => {
             }
         })
 
-        const response = Promise.all(promise);
+        const response = await Promise.all(promise);
+        console.log("Response", response);
         return {
             status: 200,
             message: "Attendance fetched successfully",

@@ -174,5 +174,3 @@ export const refreshToken = async (): Promise<Response> => {
         };
     }
 }
-
-

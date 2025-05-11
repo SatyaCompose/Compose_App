@@ -229,3 +229,32 @@ export const getAllUsers = async (email: string): Promise<Response> => {
         }
     }
 };
+
+export const getlUsersSkills = async (email: string): Promise<Response> => {
+    try {
+        const users = await User.find({ email: { $ne: email } });
+
+        const emails = users.map((user) => user.email);
+
+        emails?.map((email) => {
+            const user = users?.filter((user) => user.email === email)?.[0];
+            return{
+                email: email,
+                userSkills: user?.skills,
+                userName: `${user?.firstName} ${user?.lastName}`,
+            }
+        });
+        return {
+            status: 200,
+            message: "Users fetched successfully..!",
+            data: users
+        };
+    } catch (error) {
+        console.error("Error fetching users:", error);
+        return {
+            status: 400,
+            statusText: "Bad request",
+            message: "Something went wrong during fetchUser..!"
+        }
+    }
+};

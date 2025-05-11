@@ -13,6 +13,9 @@ import ErrorBoundary from './ErrorBoundary';
 import ProfilePage from './Profile';
 import { HolidaysPage } from './Holidays';
 import { LeavesPage } from './Leaves';
+import AttendanceList from './AttendanceList';
+import SkillsList from './SkillsList';
+import LeaveList from './LeavesList';
 
 function App() {
   return (
@@ -79,6 +82,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <LeavesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/attendance-list"
+            element={
+              <ProtectedRoute>
+                <AttendanceList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/skills-list"
+            element={
+              <ProtectedRoute>
+                <SkillsList />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/leaves-list"
+            element={
+              <ProtectedRoute>
+                <LeaveList />
               </ProtectedRoute>
             }
           />

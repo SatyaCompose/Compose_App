@@ -11,7 +11,6 @@ const AttendanceBar = () => {
             try {
                 const response = await fetchClockedInusers();
                 const data = response?.data;
-                console.log("DATA", data);
                 setClockedInUsers(data);
             } catch (error) {
                 console.error(error);
